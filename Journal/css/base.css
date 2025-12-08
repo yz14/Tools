@@ -1,0 +1,144 @@
+/**
+ * base.css - 基础样式和CSS变量
+ * 定义全局CSS变量、重置样式和通用样式
+ */
+
+/* ========== CSS变量定义 ========== */
+:root {
+    /* 主色调 */
+    --color-primary: #1a4d7e;
+    --color-primary-light: #2a5d8e;
+    --color-primary-dark: #0d3a5f;
+    
+    /* 中性色 */
+    --color-text: #2c2c2c;
+    --color-text-light: #333;
+    --color-text-muted: #666;
+    --color-text-hint: #999;
+    
+    /* 背景色 */
+    --color-bg: #e8e4e0;
+    --color-bg-white: white;
+    --color-bg-light: #f8f8f8;
+    --color-bg-lighter: #f5f5f5;
+    
+    /* 边框色 */
+    --color-border: #e0e0e0;
+    --color-border-light: #ccc;
+    
+    /* 功能色 */
+    --color-warning: #f0c419;
+    --color-warning-dark: #d4a017;
+    --color-warning-bg: #fff9e6;
+    --color-info-bg: #f5f9fc;
+    
+    /* 字体 */
+    --font-serif: 'Crimson Text', 'Times New Roman', Georgia, serif;
+    --font-sans: 'Source Sans Pro', sans-serif;
+    --font-mono: 'Courier New', monospace;
+    
+    /* 间距 */
+    --spacing-xs: 5px;
+    --spacing-sm: 10px;
+    --spacing-md: 15px;
+    --spacing-lg: 20px;
+    --spacing-xl: 30px;
+    --spacing-xxl: 40px;
+    
+    /* 圆角 */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    
+    /* 阴影 */
+    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.15);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.3);
+    --shadow-book: 0 0 40px rgba(0,0,0,0.4), inset -2px 0 2px rgba(0,0,0,0.1), inset 2px 0 2px rgba(0,0,0,0.1);
+    
+    /* 过渡 */
+    --transition-fast: 0.3s ease;
+    --transition-normal: 0.3s;
+}
+
+/* ========== 重置样式 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== 基础样式 ========== */
+body {
+    font-family: var(--font-serif);
+    line-height: 1.6;
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 16px;
+}
+
+/* ========== 书籍容器 ========== */
+.book-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: var(--color-bg-white);
+    box-shadow: var(--shadow-book);
+    position: relative;
+}
+
+/* 书脊效果 */
+.book-container::before {
+    content: '';
+    position: absolute;
+    left: 40px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to right, transparent, rgba(0,0,0,0.1));
+}
+
+/* ========== 可编辑区域 ========== */
+.editable {
+    cursor: text;
+    position: relative;
+    transition: background var(--transition-fast);
+}
+
+.editable:hover {
+    background: rgba(26, 77, 126, 0.05);
+}
+
+.editable:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    background: var(--color-bg-white);
+}
+
+.editable:focus::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* ========== 加载动画 ========== */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

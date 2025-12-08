@@ -1,0 +1,306 @@
+/**
+ * 音频可视化样式 - 波形和VU表
+ */
+
+/* 嵌入式可视化灯管 - 底部横跨 */
+.embedded-visualizer {
+    position: relative;
+    width: 100%;
+    padding: 8px 15px;
+    margin-top: 8px;
+    border-radius: 15px;
+    /* 内凹凸效果 */
+    background: linear-gradient(180deg,
+        rgba(5, 5, 10, 1) 0%,
+        rgba(8, 8, 15, 1) 50%,
+        rgba(5, 5, 10, 1) 100%);
+    box-shadow: 
+        inset 0 5px 20px rgba(0, 0, 0, 0.95),
+        inset 0 -2px 8px rgba(0, 0, 0, 0.5),
+        inset 3px 0 8px rgba(0, 0, 0, 0.3),
+        inset -3px 0 8px rgba(0, 0, 0, 0.3),
+        /* 边框 */
+        0 2px 5px rgba(0, 0, 0, 0.4);
+    /* 金属边框 */
+    border: 2px solid rgba(45, 45, 55, 0.8);
+    outline: 1px solid rgba(60, 60, 70, 0.5);
+    outline-offset: 2px;
+}
+
+/* 灯管玻璃外壳效果 */
+.embedded-visualizer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 20px;
+    background: 
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.06) 0%,
+            transparent 30%,
+            transparent 70%,
+            rgba(255, 255, 255, 0.03) 100%
+        );
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* 灯管内部光晕 */
+.embedded-visualizer::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 8px;
+    right: 8px;
+    height: 35%;
+    background: 
+        radial-gradient(ellipse at center top,
+            rgba(255, 255, 255, 0.12) 0%,
+            rgba(255, 255, 255, 0.05) 40%,
+            transparent 100%
+        );
+    border-radius: 15px 15px 50% 50%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 可视化频谱画布 */
+.waveform-canvas {
+    width: 100%;
+    height: 50px;
+    border-radius: 20px;
+    background: 
+        radial-gradient(ellipse at center,
+            rgba(8, 8, 12, 1) 0%,
+            rgba(5, 5, 10, 1) 60%,
+            rgba(12, 12, 18, 0.95) 100%
+        );
+    position: relative;
+    overflow: visible;
+    box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.8),
+        inset 0 -1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 玻璃灯管 - 顶部高光 */
+.waveform-canvas::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5%;
+    right: 5%;
+    height: 45%;
+    background: 
+        radial-gradient(ellipse at center top,
+            rgba(255, 255, 255, 0.5) 0%,
+            rgba(255, 255, 255, 0.25) 30%,
+            rgba(255, 255, 255, 0.08) 60%,
+            transparent 100%
+        );
+    border-radius: 16px 16px 50% 50%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* 玻璃灯管 - 底部反光 */
+.waveform-canvas::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    right: 5%;
+    height: 25%;
+    background: 
+        radial-gradient(ellipse at center bottom,
+            rgba(255, 255, 255, 0.2) 0%,
+            rgba(255, 255, 255, 0.08) 50%,
+            transparent 100%
+        );
+    border-radius: 50% 50% 16px 16px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* VU表 */
+.vu-meters {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px;
+    background: linear-gradient(145deg, rgba(20, 20, 30, 0.95), rgba(15, 15, 25, 0.98));
+    border-radius: var(--radius-md);
+    box-shadow: 
+        inset 0 2px 10px rgba(0, 0, 0, 0.5),
+        0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.vu-meter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.vu-label {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+}
+
+.vu-scale {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    background: radial-gradient(ellipse at center, rgba(10, 10, 15, 0.9), rgba(5, 5, 10, 1));
+    border-radius: 12px;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.8),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.vu-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.vu-needle {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    width: 2px;
+    height: 50px;
+    background: linear-gradient(to top, var(--color-danger-dark), var(--color-warning), var(--color-primary));
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(-70deg);
+    transition: transform 0.15s ease-out;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+    filter: drop-shadow(0 0 3px rgba(255, 170, 0, 0.6));
+}
+
+.vu-needle::before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #333, #000);
+    border-radius: 50%;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.vu-marks {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.65em;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    padding: 0 5px;
+}
+
+.vu-marks span {
+    flex: 1;
+    text-align: center;
+}
+
+/* ==================== VU表（喇叭上方） ==================== */
+
+.vu-meter-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vu-meter-mini .vu-scale {
+    position: relative;
+    width: 168px;
+    height: 84px;
+    background: radial-gradient(circle at center bottom, rgba(10, 10, 15, 0.95), rgba(5, 5, 10, 1));
+    border-radius: 84px 84px 4px 4px;
+    border: 2px solid rgba(40, 40, 50, 0.6);
+    box-shadow: 
+        inset 0 3px 15px rgba(0, 0, 0, 0.9),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.02),
+        0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* VU表刻度 - 电压表/电流表风格弧形刻度盘 */
+.vu-meter-mini .vu-marks-arc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+/* 刻度线容器 - 标准上半圆弧形刻度 */
+.vu-meter-mini .vu-marks-arc::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 168px;
+    height: 84px;
+    transform: translateX(-50%);
+    /* 
+     * 标准上半圆刻度盘 - 所有刻度线精确指向圆心
+     * viewBox: 0 0 168 84, 圆心在 (84, 84)
+     * 外半径R=78, 内半径r=70(主刻度) 或 r=73(副刻度)
+     * 刻度从180度到0度(左到右)均匀分布
+     * 坐标公式: x = 84 + R*cos(angle), y = 84 - R*sin(angle)
+     */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 168 84'%3E%3Cg fill='none' stroke-linecap='round'%3E%3C!-- 主刻度线(长8px) 从180度到0度，每18度一条，共11条 --%3E%3Cline x1='6' y1='84' x2='14' y2='84' stroke='%2300ff88' stroke-width='2'/%3E%3Cline x1='9.81' y1='59.90' x2='17.42' y2='62.27' stroke='%2300ff88' stroke-width='2'/%3E%3Cline x1='20.90' y1='38.15' x2='27.37' y2='42.85' stroke='%2300ff88' stroke-width='2'/%3E%3Cline x1='38.15' y1='20.90' x2='42.85' y2='27.37' stroke='%2300ff88' stroke-width='2'/%3E%3Cline x1='59.90' y1='9.81' x2='62.27' y2='17.42' stroke='%23cccc00' stroke-width='2'/%3E%3Cline x1='84' y1='6' x2='84' y2='14' stroke='%23ffcc00' stroke-width='2'/%3E%3Cline x1='108.10' y1='9.81' x2='105.73' y2='17.42' stroke='%23ff9900' stroke-width='2'/%3E%3Cline x1='129.85' y1='20.90' x2='125.15' y2='27.37' stroke='%23ff6600' stroke-width='2'/%3E%3Cline x1='147.10' y1='38.15' x2='140.63' y2='42.85' stroke='%23ff4444' stroke-width='2'/%3E%3Cline x1='158.19' y1='59.90' x2='150.58' y2='62.27' stroke='%23ff4444' stroke-width='2'/%3E%3Cline x1='162' y1='84' x2='154' y2='84' stroke='%23ff2222' stroke-width='2'/%3E%3C!-- 副刻度线(长5px) 主刻度之间，每18度偏移9度 --%3E%3Cline x1='6.96' y1='71.80' x2='11.86' y2='72.58' stroke='%2300dd77' stroke-width='1'/%3E%3Cline x1='14.52' y1='48.59' x2='18.96' y2='50.86' stroke='%2300dd77' stroke-width='1'/%3E%3Cline x1='28.85' y1='28.85' x2='32.38' y2='32.38' stroke='%2300dd77' stroke-width='1'/%3E%3Cline x1='48.59' y1='14.52' x2='50.86' y2='18.96' stroke='%23aaaa00' stroke-width='1'/%3E%3Cline x1='71.80' y1='6.96' x2='72.58' y2='11.86' stroke='%23ddaa00' stroke-width='1'/%3E%3Cline x1='96.20' y1='6.96' x2='95.42' y2='11.86' stroke='%23ffaa00' stroke-width='1'/%3E%3Cline x1='119.41' y1='14.52' x2='117.14' y2='18.96' stroke='%23ff7700' stroke-width='1'/%3E%3Cline x1='139.15' y1='28.85' x2='135.62' y2='32.38' stroke='%23ff5533' stroke-width='1'/%3E%3Cline x1='153.48' y1='48.59' x2='149.04' y2='50.86' stroke='%23ff4444' stroke-width='1'/%3E%3Cline x1='161.04' y1='71.80' x2='156.14' y2='72.58' stroke='%23ff3333' stroke-width='1'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.vu-meter-mini .vu-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.vu-meter-mini .vu-needle {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    height: 77px;
+    background: linear-gradient(to top, #ff0000, #ffaa00, #00d4ff);
+    transform-origin: bottom center;
+    transform: translateX(-50%) rotate(-90deg);
+    transition: transform 0.12s ease-out;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+    filter: drop-shadow(0 0 3px rgba(255, 170, 0, 0.6));
+}
+
+.vu-meter-mini .vu-needle::before {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #444, #111);
+    border-radius: 50%;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+}

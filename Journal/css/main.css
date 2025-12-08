@@ -1,0 +1,18 @@
+/**
+ * main.css - 主样式入口
+ * 导入所有CSS模块
+ */
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
+/* CSS模块导入 */
+@import './base.css';
+@import './cover.css';
+@import './toc.css';
+@import './chapter.css';
+@import './content.css';
+@import './components.css';
+@import './toolbar.css';
+@import './dialog.css';
+@import './responsive.css';

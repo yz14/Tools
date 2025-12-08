@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal</title>
+    <!-- 主样式入口 -->
+    <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+    <!-- 工具栏 -->
+    <div class="toolbar">
+        <div class="toolbar-title">编辑工具</div>
+        <div class="toolbar-buttons">
+            <button onclick="showMetaSelector()">🌤️ 编辑元数据</button>
+            <button onclick="addNewEntry()">📝 新增内容</button>
+            <button onclick="insertMedia('image')">🖼️ 插入图片</button>
+            <button onclick="insertMedia('video')">🎬 插入视频</button>
+            <button onclick="insertMarginNote()">📝 插入笔记</button>
+            <button onclick="insertQuote()">💬 插入引用</button>
+            <button onclick="insertKeyConceptBox()">💡 插入概念</button>
+            <button onclick="insertNewChapter()" class="secondary">📖 新建章节</button>
+            <button onclick="exportJSON()" class="secondary">💾 导出JSON</button>
+            <button onclick="importJSON()" class="secondary">📂 导入JSON</button>
+            <button onclick="window.print()" class="secondary">🖨️ 打印</button>
+        </div>
+    </div>
+
+    <!-- 元数据选择对话框 -->
+    <div class="media-dialog" id="metaDialog" style="max-width: 500px;">
+        <div class="dialog-header">编辑日记元数据</div>
+        <div class="dialog-body" style="max-height: 60vh; overflow-y: auto;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">🌡️ 天气:</label>
+                    <select id="weatherSelect" class="dialog-input">
+                        <option value="☀️ 晴朗">☀️ 晴朗</option>
+                        <option value="🌤️ 多云">🌤️ 多云</option>
+                        <option value="⛅ 局部多云">⛅ 局部多云</option>
+                        <option value="☁️ 阴天">☁️ 阴天</option>
+                        <option value="🌥️ 阴转晴">🌥️ 阴转晴</option>
+                        <option value="🌦️ 阵雨">🌦️ 阵雨</option>
+                        <option value="🌧️ 小雨">🌧️ 小雨</option>
+                        <option value="🌨️ 雨夹雪">🌨️ 雨夹雪</option>
+                        <option value="⛈️ 雷雨">⛈️ 雷雨</option>
+                        <option value="🌩️ 雷阵雨">🌩️ 雷阵雨</option>
+                        <option value="❄️ 小雪">❄️ 小雪</option>
+                        <option value="🌬️ 大风">🌬️ 大风</option>
+                        <option value="🌫️ 雾霾">🌫️ 雾霾</option>
+                        <option value="🌈 雨后彩虹">🌈 雨后彩虹</option>
+                        <option value="🌙 夜晚晴朗">🌙 夜晚晴朗</option>
+                        <option value="⭐ 星空">⭐ 星空</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">🌡️ 温度:</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="temperatureInput" class="dialog-input" placeholder="25" style="width: 80px;">
+                        <select id="tempUnitSelect" class="dialog-input" style="width: auto;">
+                            <option value="°C">°C</option>
+                            <option value="°F">°F</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600;">📍 地点:</label>
+                <input type="text" id="locationInput" class="dialog-input" placeholder="输入地点，如：家中、咖啡馆、公园...">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">💭 心情:</label>
+                    <select id="moodSelect" class="dialog-input">
+                        <option value="😊 开心">😊 开心</option>
+                        <option value="😄 兴奋">😄 兴奋</option>
+                        <option value="🥰 幸福">🥰 幸福</option>
+                        <option value="😌 平静">😌 平静</option>
+                        <option value="🙂 满足">🙂 满足</option>
+                        <option value="😐 一般">😐 一般</option>
+                        <option value="🤔 思考">🤔 思考</option>
+                        <option value="😔 忧郁">😔 忧郁</option>
+                        <option value="😢 难过">😢 难过</option>
+                        <option value="😤 生气">😤 生气</option>
+                        <option value="😰 焦虑">😰 焦虑</option>
+                        <option value="😴 疲惫">😴 疲惫</option>
+                        <option value="🤩 惊喜">🤩 惊喜</option>
+                        <option value="😇 感恩">😇 感恩</option>
+                        <option value="🥱 无聊">🥱 无聊</option>
+                        <option value="💪 充满动力">💪 充满动力</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 600;">⏰ 时段:</label>
+                    <select id="timeSelect" class="dialog-input">
+                        <option value="🌅 清晨">🌅 清晨</option>
+                        <option value="🌄 早晨">🌄 早晨</option>
+                        <option value="☀️ 上午">☀️ 上午</option>
+                        <option value="🌞 中午">🌞 中午</option>
+                        <option value="🌇 下午">🌇 下午</option>
+                        <option value="🌆 傍晚">🌆 傍晚</option>
+                        <option value="🌃 夜晚">🌃 夜晚</option>
+                        <option value="🌙 深夜">🌙 深夜</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600;">🏷️ 活动标签:</label>
+                <input type="text" id="activityInput" class="dialog-input" placeholder="如：工作、学习、旅行、运动、阅读...">
+            </div>
+            <div style="margin-top: 15px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600;">👥 同行人:</label>
+                <input type="text" id="companionInput" class="dialog-input" placeholder="如：独自、家人、朋友、同事...">
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button class="dialog-button cancel" onclick="closeMetaDialog()">取消</button>
+            <button class="dialog-button primary" onclick="confirmUpdateMeta()">更新</button>
+        </div>
+    </div>
+
+    <!-- 媒体插入对话框 -->
+    <div class="overlay" id="overlay" onclick="event.stopPropagation(); closeDialog()"></div>
+    <div class="media-dialog" id="mediaDialog">
+        <div class="dialog-header" id="dialogTitle">插入图片</div>
+        <div class="dialog-body">
+            <input type="text" class="dialog-input" id="mediaPath" placeholder="输入相对路径，如：./imgs/photo.jpg">
+            <input type="text" class="dialog-input" id="mediaCaption" placeholder="图片说明（可选）">
+            
+            <div class="size-options">
+                <div class="size-option" data-size="tiny">极小</div>
+                <div class="size-option" data-size="small">小</div>
+                <div class="size-option active" data-size="medium">中</div>
+                <div class="size-option" data-size="large">大</div>
+                <div class="size-option" data-size="full">全宽</div>
+            </div>
+            
+            <label>
+                <input type="checkbox" id="multipleMedia"> 插入多个（并排显示）
+            </label>
+        </div>
+        <div class="dialog-buttons">
+            <button class="dialog-button cancel" onclick="closeDialog()">取消</button>
+            <button class="dialog-button primary" onclick="confirmInsertMedia()">插入</button>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="book-container">
+        <!-- 封面 -->
+        <div class="cover-page">
+            <div class="cover-image-container">
+                <img class="cover-image" src="./imgs/1.png" alt="Cover" 
+                     onerror="this.style.display='none'">
+            </div>
+            <div class="cover-content">
+                <div class="cover-header">
+                    <div class="edition-info">2025 Edition</div>
+                </div>
+                <div class="cover-main">
+                    <h1 class="cover-title">Personal<br>Journal</h1>
+                    <div class="cover-subtitle">无为而为</div>
+                    <div class="cover-author editable" contenteditable="true">Yuan Zhen</div>
+                </div>
+                <div class="cover-footer">
+                    <div class="publisher">Self Published</div>
+                    <div class="year">2025</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 目录页 -->
+        <div class="toc-page">
+            <h2 class="toc-header">Contents</h2>
+            
+            <div class="toc-content" id="tocContent">
+                <div class="toc-part">
+                    <div class="part-header">Part 0: 前言</div>
+                    <div class="toc-entry" onclick="scrollToEntry('entry1')">
+                        <span class="toc-number">0.0</span>
+                        <span class="toc-title">写在前面</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 章节页 -->
+        <div class="chapter-page">
+            <div class="chapter-number-large">00</div>
+            <div class="chapter-content">
+                <h2 class="chapter-title-page">前言</h2>
+                <p class="chapter-subtitle">测试用例</p>
+            </div>
+        </div>
+
+        <!-- 正文内容 -->
+        <div class="content-page single-column" id="contentPage">
+            <div class="page-header">
+                <span>Chapter 0: 前言</span>
+                <span>Personal Journal 2025</span>
+            </div>
+
+            <!-- 第一篇日记 -->
+            <div class="journal-entry" id="entry1">
+                <div class="entry-header">
+                    <div class="entry-date">2025/10/16</div>
+                    <h3 class="entry-title editable" contenteditable="true">写在前面</h3>
+                    <div class="entry-meta">
+                        <span class="meta-item">
+                            <span class="meta-icon">☀️</span>
+                            晴朗 · 22°C
+                        </span>
+                        <span class="meta-item">
+                            <span class="meta-icon">📍</span>
+                            梅溪湖创新中心
+                        </span>
+                        <span class="meta-item">
+                            <span class="meta-icon">💭</span>
+                            平静
+                        </span>
+                    </div>
+                </div>
+
+                <div class="entry-content editable" contenteditable="true">
+                    <p>这里是测试用例，测试各种功能是否正常。</p>
+
+                    <div class="margin-note">
+                        <div class="margin-note-title">笔记</div>
+                        这里是侧栏的笔记。
+                    </div>
+
+                    <p>这里是插入图片，并设定图片的显示尺寸。</p>
+
+                    <div class="figure-container">
+                        <div class="figure-row">
+                            <div class="figure medium">
+                                <img src="./imgs/1.png" alt="图片1" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjgwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZTRmMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5TYWt1cmEgVHJlZTwvdGV4dD48L3N2Zz4='">
+                                <div class="figure-caption">
+                                    <span class="figure-label">Figure 1.1</span> 谷歌生成的图片。
+                                </div>
+                            </div>
+                            <div class="figure small">
+                                <img src="./imgs/2.png" alt="图片2" 
+                                     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2ZmZjBmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5QZXRhbHM8L3RleHQ+PC9zdmc+'">
+                                <div class="figure-caption">
+                                    <span class="figure-label">Figure 1.2</span> 谷歌生成的图片。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>这里插入一段概念。</p>
+
+                    <div class="key-concept">
+                        <div class="key-concept-header">
+                            <span>💡</span> 这里是一个概念
+                        </div>
+                        概念内容。
+                    </div>
+
+                    <p>这里插入一段引用。</p>
+
+                    <div class="textbook-quote">
+                        "这里是一个引用。"
+                    </div>
+
+                    <p>这里插入一个视频（功能还未测试）。</p>
+
+                    <div class="figure-container">
+                        <div class="figure large">
+                            <video controls>
+                                <source src="./videos/rain-window.mp4" type="video/mp4">
+                                您的浏览器不支持视频标签。
+                            </video>
+                            <div class="figure-caption">
+                                <span class="figure-label">Video 2.1</span> 雨夜的窗外，雨滴在玻璃上形成了美丽的图案，仿佛是大自然的抽象画。
+                            </div>
+                        </div>
+                    </div>
+
+                    <p>这里是插入多张图片。</p>
+
+                    <div class="figure-container">
+                        <div class="subfigures">
+                            <div class="subfigure">
+                                <div class="figure small">
+                                    <img src="./imgs/market-entrance.jpg" alt="市集入口" 
+                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2ZmZjVlNiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5NYXJrZXQ8L3RleHQ+PC9zdmc+'">
+                                </div>
+                                <div class="subfigure-label">(a) 市集入口</div>
+                            </div>
+                            <div class="subfigure">
+                                <div class="figure small">
+                                    <img src="./imgs/fresh-produce.jpg" alt="新鲜蔬果" 
+                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2Y0ZmZmNCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Qcm9kdWNlPC90ZXh0Pjwvc3ZnPg=='">
+                                </div>
+                                <div class="subfigure-label">(b) 新鲜蔬果</div>
+                            </div>
+                            <div class="subfigure">
+                                <div class="figure small">
+                                    <img src="./imgs/sunflowers.jpg" alt="向日葵" 
+                                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iI2ZmZmJlMCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5OTkiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5TdW5mbG93ZXJzPC90ZXh0Pjwvc3ZnPg=='">
+                                </div>
+                                <div class="subfigure-label">(c) 向日葵摊位</div>
+                            </div>
+                        </div>
+                        <div class="figure-caption">
+                            <span class="figure-label">Figure 3.1</span> 农夫市集的多彩场景。每个摊位都展现着大自然的慷慨馈赠。
+                        </div>
+                    </div>
+
+                    <p>这里是插入一张表格。</p>
+
+                    <div class="data-table">
+                        <caption>Table 3.1 今日市集采购清单</caption>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>物品</th>
+                                    <th>数量</th>
+                                    <th>产地</th>
+                                    <th>特色</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>有机西红柿</td>
+                                    <td>2公斤</td>
+                                    <td>阳光农场</td>
+                                    <td>自然成熟，味道浓郁</td>
+                                </tr>
+                                <tr>
+                                    <td>手工面包</td>
+                                    <td>3个</td>
+                                    <td>石磨坊</td>
+                                    <td>传统石磨面粉</td>
+                                </tr>
+                                <tr>
+                                    <td>野生蜂蜜</td>
+                                    <td>1瓶</td>
+                                    <td>山谷蜂场</td>
+                                    <td>百花蜜，未经加工</td>
+                                </tr>
+                                <tr>
+                                    <td>向日葵</td>
+                                    <td>1束</td>
+                                    <td>向阳花园</td>
+                                    <td>刚剪下的新鲜花朵</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>这里是插入一个公式。</p>
+
+                    <div class="equation">
+                        幸福 = 简单生活 + 用心感受 + 与人连接
+                        <span class="equation-number">(3.1)</span>
+                    </div>
+
+                </div>
+
+                <!-- 参考文献 -->
+                <div class="references">
+                    <div class="references-title">参考文献 References</div>
+                    <div class="reference-item">
+                        [1] Csikszentmihalyi, M. (1990). Flow: The Psychology of Optimal Experience. Harper & Row.
+                    </div>
+                    <div class="reference-item">
+                        [2] 川端康成. (1968). 《雪国》. 新潮社.
+                    </div>
+                    <div class="reference-item">
+                        [3] García Márquez, G. (1967). Cien años de soledad. Editorial Sudamericana.
+                    </div>
+                    <div class="reference-item">
+                        [4] Thoreau, H.D. (1854). Walden; or, Life in the Woods. Ticknor and Fields.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 页脚 -->
+            <div class="page-footer">
+                <span class="page-number">15</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript模块 - 按依赖顺序加载 -->
+    <script src="./js/state.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/storage.js"></script>
+    <script src="./js/dialog.js"></script>
+    <script src="./js/media.js"></script>
+    <script src="./js/toc.js"></script>
+    <script src="./js/chapter.js"></script>
+    <script src="./js/entry.js"></script>
+    <script src="./js/cover.js"></script>
+        <script src="./js/shortcuts.js"></script>
+    <script src="./js/app.js"></script>
+</body>
+</html>

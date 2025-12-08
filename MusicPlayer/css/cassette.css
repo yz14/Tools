@@ -1,0 +1,776 @@
+/**
+ * 磁带机样式
+ */
+
+/* 磁带机主体 - 内部面板 */
+.cassette-player {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    /* 内部凹槽效果 */
+    background: 
+        /* 边缘阴影 */
+        linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, transparent 3%),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.15) 0%, transparent 3%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 0%, transparent 2%),
+        linear-gradient(270deg, rgba(0, 0, 0, 0.1) 0%, transparent 2%),
+        /* 微妙纹理 */
+        linear-gradient(145deg, rgba(35, 35, 45, 0.5) 0%, rgba(25, 25, 35, 0.5) 100%);
+    border-radius: 12px;
+    box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 -1px 3px rgba(255, 255, 255, 0.03);
+    position: relative;
+}
+
+/* 装饰螺丝 - 四角 */
+.cassette-player::before,
+.cassette-player::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, rgba(90, 90, 100, 0.9) 0%, rgba(50, 50, 60, 1) 50%, rgba(30, 30, 40, 1) 100%);
+    box-shadow: 
+        inset 0 1px 2px rgba(0, 0, 0, 0.8),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.1),
+        0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.cassette-player::before {
+    top: 8px;
+    left: 8px;
+}
+
+.cassette-player::after {
+    top: 8px;
+    right: 8px;
+}
+
+/* 顶部灯带区域 */
+.top-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: linear-gradient(180deg, 
+        rgba(20, 20, 28, 0.9) 0%, 
+        rgba(15, 15, 22, 0.95) 100%);
+    border-radius: 10px;
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.6),
+        0 1px 0 rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(50, 50, 60, 0.4);
+}
+
+/* 进度条灯带 */
+.progress-strip {
+    flex: 1;
+    height: 28px;
+    background: linear-gradient(180deg, rgba(10, 10, 15, 0.95), rgba(5, 5, 10, 0.98));
+    border-radius: 14px;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.8),
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.progress-strip-fill {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    bottom: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 50%, var(--color-secondary) 100%);
+    border-radius: 10px;
+    box-shadow: 
+        0 0 15px rgba(0, 212, 255, 0.6),
+        0 0 30px rgba(0, 212, 255, 0.3);
+    transition: width 0.1s linear;
+    pointer-events: none;
+}
+
+.progress-strip-time {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 0.75em;
+    font-family: var(--font-mono);
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* 主体区域：VU表+喇叭+磁带仓 */
+.cassette-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 0;
+    padding: 10px 5px;
+    background: linear-gradient(180deg, 
+        rgba(25, 25, 35, 0.6) 0%, 
+        rgba(20, 20, 28, 0.8) 100%);
+    border-radius: 12px;
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.5),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(45, 45, 55, 0.5);
+    position: relative;
+}
+
+/* 主体区域通风孔装饰 */
+.cassette-main::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: repeating-linear-gradient(90deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(0, 0, 0, 0.4) 3px,
+        rgba(0, 0, 0, 0.4) 5px
+    );
+    border-radius: 2px;
+    opacity: 0.6;
+}
+
+/* 喇叭列（VU表 + 喇叭） */
+.speaker-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    flex: 1;
+    padding-top: 5px;
+}
+
+/* VU表位置微调 */
+.speaker-column .vu-meter-mini {
+    margin-bottom: 5px;
+}
+
+/* 喇叭位置微调 */
+.speaker-column .speaker {
+    margin-top: 10px;
+}
+
+/* 音量灯带 - 点击式控制 */
+.volume-strip {
+    width: 120px;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(10, 10, 15, 0.95), rgba(5, 5, 10, 0.98));
+    border-radius: 10px;
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.8),
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.volume-strip-fill {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    bottom: 3px;
+    width: 70%;
+    background: linear-gradient(90deg, 
+        var(--color-secondary) 0%, 
+        var(--color-primary) 50%, 
+        var(--color-primary-dark) 100%);
+    border-radius: 5px;
+    box-shadow: 
+        0 0 10px rgba(0, 212, 255, 0.5),
+        0 0 20px rgba(0, 212, 255, 0.2);
+    transition: width 0.1s ease-out;
+}
+
+/* 喇叭容器 - 真实金属质感 */
+.speaker {
+    width: 155px;
+    height: 155px;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(80, 80, 90, 0.4) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(10, 10, 15, 0.8) 0%, transparent 40%),
+        radial-gradient(circle, 
+            rgba(55, 55, 65, 1) 0%,
+            rgba(45, 45, 55, 1) 30%,
+            rgba(35, 35, 45, 1) 60%,
+            rgba(25, 25, 35, 1) 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 
+        inset 0 3px 15px rgba(0, 0, 0, 0.9),
+        inset 0 -2px 8px rgba(255, 255, 255, 0.05),
+        0 8px 30px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(60, 60, 70, 0.5),
+        0 0 0 4px rgba(30, 30, 40, 0.8);
+    flex-shrink: 0;
+}
+
+/* 喭叭扁形灯 - 透亮立体感 */
+.speaker::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        rgba(255, 60, 60, 0.9) 0deg,
+        rgba(255, 100, 100, 1) 20deg,
+        rgba(255, 60, 60, 0.9) 40deg,
+        transparent 40deg,
+        transparent 90deg,
+        rgba(60, 255, 120, 0.9) 90deg,
+        rgba(100, 255, 150, 1) 110deg,
+        rgba(60, 255, 120, 0.9) 130deg,
+        transparent 130deg,
+        transparent 180deg,
+        rgba(60, 150, 255, 0.9) 180deg,
+        rgba(100, 180, 255, 1) 200deg,
+        rgba(60, 150, 255, 0.9) 220deg,
+        transparent 220deg,
+        transparent 270deg,
+        rgba(255, 220, 60, 0.9) 270deg,
+        rgba(255, 240, 100, 1) 290deg,
+        rgba(255, 220, 60, 0.9) 310deg,
+        transparent 310deg,
+        transparent 360deg
+    );
+    /* 遮罩：内部透明，外边缘渐变透明制造立体感 */
+    -webkit-mask-image: radial-gradient(circle, 
+        transparent 20%, 
+        black 25%, 
+        black 92%, 
+        transparent 100%);
+    mask-image: radial-gradient(circle, 
+        transparent 20%, 
+        black 25%, 
+        black 92%, 
+        transparent 100%);
+    filter: blur(0.5px);
+    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+/* 灯光外圈光晕效果 */
+.speaker::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        rgba(255, 80, 80, 0.4) 0deg,
+        rgba(255, 80, 80, 0.6) 20deg,
+        rgba(255, 80, 80, 0.4) 40deg,
+        transparent 40deg,
+        transparent 90deg,
+        rgba(80, 255, 140, 0.4) 90deg,
+        rgba(80, 255, 140, 0.6) 110deg,
+        rgba(80, 255, 140, 0.4) 130deg,
+        transparent 130deg,
+        transparent 180deg,
+        rgba(80, 170, 255, 0.4) 180deg,
+        rgba(80, 170, 255, 0.6) 200deg,
+        rgba(80, 170, 255, 0.4) 220deg,
+        transparent 220deg,
+        transparent 270deg,
+        rgba(255, 230, 80, 0.4) 270deg,
+        rgba(255, 230, 80, 0.6) 290deg,
+        rgba(255, 230, 80, 0.4) 310deg,
+        transparent 310deg,
+        transparent 360deg
+    );
+    -webkit-mask-image: radial-gradient(circle, 
+        transparent 45%, 
+        black 55%, 
+        black 85%, 
+        transparent 100%);
+    mask-image: radial-gradient(circle, 
+        transparent 45%, 
+        black 55%, 
+        black 85%, 
+        transparent 100%);
+    filter: blur(4px);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.album-art.playing .speaker::before {
+    opacity: 1;
+    animation: speakerRgbGlow 8s linear infinite;
+}
+
+.album-art.playing .speaker::after {
+    opacity: 1;
+    animation: speakerRgbGlow 8s linear infinite;
+}
+
+@keyframes speakerRgbGlow {
+    from { transform: rotate(0deg) translateZ(0); }
+    to { transform: rotate(-360deg) translateZ(0); }
+}
+
+/* 喭叭网格 - 真实质感 */
+.speaker-grill {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65%;
+    height: 65%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, rgba(60, 60, 70, 0.3) 0%, transparent 40%),
+        repeating-radial-gradient(
+            circle,
+            rgba(15, 15, 20, 0.95) 0px,
+            rgba(15, 15, 20, 0.95) 2px,
+            rgba(30, 30, 40, 0.6) 2px,
+            rgba(30, 30, 40, 0.6) 4px
+        );
+    border: 3px solid rgba(50, 50, 60, 0.8);
+    box-shadow: 
+        inset 0 3px 10px rgba(0, 0, 0, 0.8),
+        inset 0 -2px 5px rgba(255, 255, 255, 0.05),
+        0 2px 8px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* 喭叭中心球顶 */
+.speaker-grill::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 25%;
+    height: 25%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, rgba(90, 90, 100, 0.8) 0%, transparent 50%),
+        radial-gradient(circle, 
+            rgba(50, 50, 60, 1) 0%,
+            rgba(35, 35, 45, 1) 50%,
+            rgba(25, 25, 35, 1) 100%);
+    box-shadow: 
+        inset 0 2px 5px rgba(0, 0, 0, 0.8),
+        0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* 喭叭同心圆纹理 */
+.speaker-grill::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    border: 1px solid rgba(40, 40, 50, 0.6);
+    box-shadow: 
+        inset 0 0 0 8px rgba(25, 25, 35, 0.4),
+        inset 0 0 0 16px rgba(35, 35, 45, 0.3),
+        inset 0 0 0 24px rgba(25, 25, 35, 0.2);
+    pointer-events: none;
+}
+
+/* 磁带仓 - 暗黑风格 */
+.cassette-deck {
+    flex: 0 0 auto;
+    width: 440px;
+    /* 多层渐变模拟金属外框 */
+    background: 
+        /* 边缘高光 */
+        linear-gradient(180deg, rgba(70, 70, 80, 0.15) 0%, transparent 5%),
+        /* 主体 */
+        linear-gradient(165deg, 
+            rgba(35, 35, 42, 1) 0%,
+            rgba(25, 25, 32, 1) 30%,
+            rgba(18, 18, 25, 1) 70%,
+            rgba(12, 12, 18, 1) 100%);
+    border-radius: 12px;
+    padding: 18px;
+    /* 阴影效果 */
+    box-shadow: 
+        /* 外边缘阴影 */
+        0 15px 40px rgba(0, 0, 0, 0.7),
+        0 5px 15px rgba(0, 0, 0, 0.5),
+        /* 金属外框 */
+        0 0 0 1px rgba(80, 80, 90, 0.6),
+        0 0 0 3px rgba(45, 45, 55, 0.9),
+        0 0 0 4px rgba(30, 30, 40, 1),
+        /* 内部光泽 */
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -3px 12px rgba(0, 0, 0, 0.6);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(90, 90, 100, 0.3);
+}
+
+/* 磁带仓角落装饰 */
+.cassette-deck::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(100, 100, 110, 0.8) 0%, rgba(40, 40, 50, 1) 100%);
+    box-shadow: 
+        /* 右上角 */
+        422px 0 0 0 currentColor,
+        /* 左下角 */
+        0 calc(100% - 12px) 0 0 currentColor,
+        /* 右下角 */
+        422px calc(100% - 12px) 0 0 currentColor;
+    color: rgba(60, 60, 70, 0.8);
+}
+
+/* 磁带仓顶部音效显示 */
+.cassette-effect-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 15px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 20, 30, 0.5) 20%,
+        rgba(0, 30, 40, 0.6) 50%,
+        rgba(0, 20, 30, 0.5) 80%,
+        transparent 100%);
+    margin-bottom: -5px;
+}
+
+.cassette-effect-display .effect-name {
+    font-size: 0.75em;
+    font-weight: 500;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+/* 磁带窗口 - 暗黑玻璃效果 */
+.cassette-window {
+    background: linear-gradient(180deg,
+        rgba(25, 22, 20, 0.98) 0%,
+        rgba(15, 12, 10, 0.99) 50%,
+        rgba(20, 18, 15, 0.98) 100%);
+    border-radius: 12px;
+    padding: 30px 35px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    box-shadow: 
+        inset 0 6px 25px rgba(0, 0, 0, 0.95),
+        inset 0 -2px 8px rgba(0, 0, 0, 0.6),
+        inset 4px 0 10px rgba(0, 0, 0, 0.4),
+        inset -4px 0 10px rgba(0, 0, 0, 0.4),
+        0 3px 8px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(50, 45, 40, 0.7);
+}
+
+/* 窗口玻璃反光 */
+.cassette-window::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 10%;
+    right: 10%;
+    height: 30%;
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        transparent 100%);
+    border-radius: 10px 10px 50% 50%;
+    pointer-events: none;
+}
+
+/* 磁带卷轴 */
+.tape-reel {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 35% 35%, rgba(90, 80, 70, 0.6) 0%, transparent 40%),
+        radial-gradient(circle at 65% 65%, rgba(40, 35, 30, 0.8) 0%, transparent 30%),
+        conic-gradient(from 0deg, 
+            rgba(60, 55, 50, 1) 0deg,
+            rgba(45, 40, 35, 1) 30deg,
+            rgba(55, 50, 45, 1) 60deg,
+            rgba(40, 35, 30, 1) 90deg,
+            rgba(50, 45, 40, 1) 120deg,
+            rgba(35, 30, 25, 1) 150deg,
+            rgba(55, 50, 45, 1) 180deg,
+            rgba(45, 40, 35, 1) 210deg,
+            rgba(50, 45, 40, 1) 240deg,
+            rgba(35, 30, 25, 1) 270deg,
+            rgba(55, 50, 45, 1) 300deg,
+            rgba(40, 35, 30, 1) 330deg,
+            rgba(60, 55, 50, 1) 360deg
+        );
+    position: relative;
+    box-shadow: 
+        inset 0 4px 12px rgba(0, 0, 0, 0.9),
+        inset 0 -3px 8px rgba(255, 255, 255, 0.08),
+        0 5px 20px rgba(0, 0, 0, 0.6),
+        0 0 0 3px rgba(30, 25, 20, 0.9);
+    border: 2px solid rgba(70, 60, 50, 0.6);
+}
+
+/* 磁带圈 - 棕色磁带带光泽 */
+.tape-reel::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 88%;
+    height: 88%;
+    border-radius: 50%;
+    background: 
+        radial-gradient(circle at 40% 40%, rgba(180, 140, 100, 0.3) 0%, transparent 25%),
+        radial-gradient(circle,
+            transparent 25%,
+            rgba(80, 50, 25, 0.7) 28%,
+            rgba(120, 75, 35, 0.9) 35%,
+            rgba(100, 65, 30, 1) 45%,
+            rgba(85, 55, 28, 1) 55%,
+            rgba(110, 70, 35, 0.9) 65%,
+            rgba(90, 58, 30, 0.7) 72%,
+            transparent 75%);
+    box-shadow: 
+        inset 0 2px 8px rgba(0, 0, 0, 0.6),
+        inset 0 -1px 4px rgba(255, 200, 150, 0.15);
+}
+
+/* 卷轴中心 - 金属质感 */
+.reel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: 
+        /* 金属高光 */
+        radial-gradient(circle at 30% 30%, rgba(140, 135, 130, 0.95) 0%, transparent 35%),
+        /* 金属纹理 */
+        conic-gradient(from 0deg,
+            rgba(90, 85, 80, 1) 0deg,
+            rgba(70, 65, 60, 1) 45deg,
+            rgba(85, 80, 75, 1) 90deg,
+            rgba(65, 60, 55, 1) 135deg,
+            rgba(90, 85, 80, 1) 180deg,
+            rgba(70, 65, 60, 1) 225deg,
+            rgba(85, 80, 75, 1) 270deg,
+            rgba(65, 60, 55, 1) 315deg,
+            rgba(90, 85, 80, 1) 360deg
+        );
+    box-shadow: 
+        inset 0 3px 8px rgba(0, 0, 0, 0.85),
+        inset 0 -2px 4px rgba(255, 255, 255, 0.2),
+        0 3px 6px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.7);
+}
+
+/* 播放时中心轴承微振动 */
+.album-art.playing .reel-center {
+    animation: centerSpin 1.8s linear infinite;
+}
+
+@keyframes centerSpin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+.reel-center::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: 
+        radial-gradient(circle at 40% 40%, rgba(60, 55, 50, 1) 0%, rgba(25, 22, 18, 1) 100%);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+/* 卷轴辐条 - 更精细 */
+.reel-spoke {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 48%;
+    background: linear-gradient(to bottom, 
+        rgba(80, 75, 70, 0.6) 0%,
+        rgba(100, 90, 80, 0.4) 30%,
+        rgba(60, 50, 40, 0.2) 100%);
+    transform-origin: center 0;
+    border-radius: 1px;
+}
+
+.reel-spoke:nth-child(2) { transform: translate(-50%, -50%) rotate(0deg); }
+.reel-spoke:nth-child(3) { transform: translate(-50%, -50%) rotate(60deg); }
+.reel-spoke:nth-child(4) { transform: translate(-50%, -50%) rotate(120deg); }
+.reel-spoke:nth-child(5) { transform: translate(-50%, -50%) rotate(180deg); }
+
+/* 播放时卷轴旋转 - 机械感动画 */
+.album-art.playing .tape-reel {
+    animation: 
+        reelSpin 1.8s linear infinite,
+        reelShimmer 0.3s ease-in-out infinite;
+    will-change: transform, box-shadow;
+}
+
+/* 左侧卷轴 - 略微不同步增加真实感 */
+.album-art.playing .tape-reel-left {
+    animation: 
+        reelSpin 1.85s linear infinite,
+        reelShimmer 0.32s ease-in-out infinite;
+}
+
+/* 右侧卷轴 */
+.album-art.playing .tape-reel-right {
+    animation: 
+        reelSpin 1.75s linear infinite,
+        reelShimmer 0.28s ease-in-out infinite;
+}
+
+/* 主旋转动画 */
+@keyframes reelSpin {
+    from { transform: rotate(0deg) translateZ(0); }
+    to { transform: rotate(360deg) translateZ(0); }
+}
+
+/* 金属光泽闪烁 - 模拟机械转动时的光线变化 */
+@keyframes reelShimmer {
+    0%, 100% { 
+        box-shadow: 
+            inset 0 4px 12px rgba(0, 0, 0, 0.9),
+            inset 0 -3px 8px rgba(255, 255, 255, 0.08),
+            0 5px 20px rgba(0, 0, 0, 0.6),
+            0 0 0 3px rgba(30, 25, 20, 0.9);
+    }
+    50% { 
+        box-shadow: 
+            inset 0 4px 12px rgba(0, 0, 0, 0.85),
+            inset 0 -3px 10px rgba(255, 255, 255, 0.12),
+            0 5px 22px rgba(0, 0, 0, 0.55),
+            0 0 0 3px rgba(35, 30, 25, 0.85);
+    }
+}
+
+/* 磁带连接线 - 更真实 */
+.tape-line {
+    position: absolute;
+    top: 50%;
+    left: 18%;
+    right: 18%;
+    height: 5px;
+    background: linear-gradient(180deg,
+        rgba(60, 40, 22, 0.95) 0%,
+        rgba(100, 65, 35, 1) 25%,
+        rgba(130, 85, 45, 1) 50%,
+        rgba(100, 65, 35, 1) 75%,
+        rgba(60, 40, 22, 0.95) 100%);
+    transform: translateY(-50%);
+    border-radius: 2px;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.6),
+        0 -1px 2px rgba(0, 0, 0, 0.3),
+        inset 0 1px 1px rgba(255, 200, 150, 0.25);
+}
+
+/* 磁带线光泽效果 */
+.tape-line::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 40%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 220, 180, 0.2) 30%,
+        rgba(255, 220, 180, 0.3) 50%,
+        rgba(255, 220, 180, 0.2) 70%,
+        transparent 100%);
+    border-radius: 2px 2px 0 0;
+}
+
+/* 磁带标签 */
+.cassette-label {
+    text-align: center;
+    font-size: 0.75em;
+    color: rgba(200, 180, 160, 0.9);
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    font-family: var(--font-mono);
+    padding: 6px 12px;
+    margin-top: 12px;
+    background: linear-gradient(180deg,
+        rgba(40, 40, 45, 0.8) 0%,
+        rgba(25, 25, 30, 0.9) 100%);
+    border-radius: 4px;
+    border: 1px solid rgba(60, 60, 70, 0.4);
+}
+
+/* 播放时标签发光 */
+.album-art.playing .cassette-label {
+    color: var(--color-primary);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+    animation: labelGlow 2s ease-in-out infinite;
+}
+
+@keyframes labelGlow {
+    0%, 100% { 
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
+    }
+    50% { 
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.9), 0 0 30px rgba(0, 212, 255, 0.4);
+    }
+}

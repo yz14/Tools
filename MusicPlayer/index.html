@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicPlayer</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+    
+    <!-- CSS 模块 -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/player.css">
+    <link rel="stylesheet" href="css/cassette.css">
+    <link rel="stylesheet" href="css/controls.css">
+    <link rel="stylesheet" href="css/visualizer.css">
+    <link rel="stylesheet" href="css/playlist.css">
+</head>
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation" id="bgAnimation"></div>
+
+    <div class="container fullscreen">
+        <!-- 全屏播放器面板 -->
+        <div class="player-panel fullscreen-panel">
+            <div class="album-art" id="albumArt">
+                <div class="cassette-player">
+                    <!-- 顶部：音量灯带 + 进度条灯带 + 歌曲列表按钮 -->
+                    <div class="top-strip">
+                        <!-- 音量控制灯带 -->
+                        <div class="volume-strip" id="volumeBar">
+                            <div class="volume-strip-fill" id="volumeFill"></div>
+                        </div>
+                        
+                        <!-- 进度条灯带 -->
+                        <div class="progress-strip" id="progressBar">
+                            <div class="progress-strip-fill" id="progressFill"></div>
+                            <div class="progress-strip-time">
+                                <span id="currentTime">0:00</span>
+                                <span id="duration">0:00</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 歌曲列表按钮 -->
+                        <div class="playlist-toggle-container">
+                            <button class="playlist-toggle-btn" id="playlistToggleBtn" title="歌曲列表">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                </svg>
+                                <span>列表</span>
+                                <svg class="dropdown-arrow" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            
+                            <!-- 下拉歌曲列表 -->
+                            <div class="playlist-dropdown" id="playlistDropdown">
+                                <div class="playlist-dropdown-header">
+                                    <!-- 左侧：标题 + 选择器 -->
+                                    <div class="playlist-header-left">
+                                        <h3 class="playlist-dropdown-title">音乐列表</h3>
+                                        <div class="playlist-selector" id="playlistSelector">
+                                            <button class="playlist-selector-btn" id="playlistSelectorBtn">
+                                                <span id="currentPlaylistName">music</span>
+                                                <span class="selector-arrow">▼</span>
+                                            </button>
+                                            <div class="playlist-selector-dropdown" id="playlistSelectorDropdown">
+                                                <!-- 动态填充 -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 中间：搜索框 -->
+                                    <div class="playlist-search">
+                                        <input type="text" class="search-input" id="searchInput" placeholder="搜索歌曲...">
+                                        <span class="search-icon">🔍</span>
+                                    </div>
+                                    <!-- 右侧：歌曲数量 -->
+                                    <span class="song-count" id="songCount">0 首</span>
+                                </div>
+                                <div class="playlist-content" id="playlistContent">
+                                    <div class="loading">
+                                        <div class="spinner"></div>
+                                        正在加载...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 主体区域：VU表+喇叭+磁带仓 -->
+                    <div class="cassette-main">
+                        <!-- 左侧：VU表 + 喇叭 -->
+                        <div class="speaker-column">
+                            <div class="vu-meter-mini">
+                                <div class="vu-scale">
+                                    <div class="vu-marks-arc"></div>
+                                    <canvas id="vuCanvasL" class="vu-canvas"></canvas>
+                                    <div class="vu-needle" id="vuNeedleL"></div>
+                                </div>
+                            </div>
+                            <div class="speaker speaker-left">
+                                <div class="speaker-grill"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 中间磁带仓 -->
+                        <div class="cassette-deck">
+                                <!-- 音效显示 -->
+                                <div class="cassette-effect-display">
+                                    <span class="effect-name" id="effectName">正常</span>
+                                </div>
+                                <div class="cassette-window">
+                                    <div class="tape-reel tape-reel-left">
+                                        <div class="reel-center"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                    </div>
+                                    <div class="tape-reel tape-reel-right">
+                                        <div class="reel-center"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                        <div class="reel-spoke"></div>
+                                    </div>
+                                    <div class="tape-line"></div>
+                                </div>
+                                <div class="cassette-label">♪ NOW PLAYING ♪</div>
+
+                                <!-- 磁带机控制按钮 -->
+                                <div class="cassette-controls">
+                                    <!-- 左侧模式按钮 -->
+                                    <div class="controls-side controls-left">
+                                        <button class="cassette-effect-btn" id="effectPrevBtn" title="上一个音效">◀</button>
+                                        <button class="cassette-mode-btn" id="cassetteLoopBtn" title="循环模式">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="17 1 21 5 17 9"/>
+                                                <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                                                <polyline points="7 23 3 19 7 15"/>
+                                                <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- 中间播放按钮 -->
+                                    <div class="controls-center">
+                                        <button class="cassette-btn" id="rewindBtn" title="快郮10秒">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M11 19l-7-7 7-7M18 19l-7-7 7-7"/>
+                                            </svg>
+                                        </button>
+                                        <button class="cassette-btn" id="prevBtn" title="上一首">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="19 20 9 12 19 4 19 20" fill="currentColor"/>
+                                                <line x1="5" y1="19" x2="5" y2="5"/>
+                                            </svg>
+                                        </button>
+                                        <button class="cassette-btn cassette-play-btn" id="playBtn" title="播放/暂停">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <polygon points="8 5 19 12 8 19 8 5"/>
+                                            </svg>
+                                        </button>
+                                        <button class="cassette-btn" id="nextBtn" title="下一首">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polygon points="5 4 15 12 5 20 5 4" fill="currentColor"/>
+                                                <line x1="19" y1="5" x2="19" y2="19"/>
+                                            </svg>
+                                        </button>
+                                        <button class="cassette-btn" id="forwardBtn" title="快进10秒">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M13 19l7-7-7-7M6 19l7-7-7-7"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- 右侧模式按钮 -->
+                                    <div class="controls-side controls-right">
+                                        <button class="cassette-mode-btn" id="cassetteShuffleBtn" title="随机播放">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="16 3 21 3 21 8"/>
+                                                <line x1="4" y1="20" x2="21" y2="3"/>
+                                                <polyline points="21 16 21 21 16 21"/>
+                                                <line x1="15" y1="15" x2="21" y2="21"/>
+                                                <line x1="4" y1="4" x2="9" y2="9"/>
+                                            </svg>
+                                        </button>
+                                        <button class="cassette-effect-btn" id="effectNextBtn" title="下一个音效">▶</button>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                        <!-- 右侧：VU表 + 喇叭 -->
+                        <div class="speaker-column">
+                            <div class="vu-meter-mini">
+                                <div class="vu-scale">
+                                    <div class="vu-marks-arc"></div>
+                                    <canvas id="vuCanvasR" class="vu-canvas"></canvas>
+                                    <div class="vu-needle" id="vuNeedleR"></div>
+                                </div>
+                            </div>
+                            <div class="speaker speaker-right">
+                                <div class="speaker-grill"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 底部嵌入式灯管 -->
+                    <div class="embedded-visualizer">
+                        <canvas id="waveformCanvas" class="waveform-canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <audio id="audioPlayer"></audio>
+        </div>
+    </div>
+
+    <!-- JavaScript 模块 -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+/**
+ * dialog.css - 对话框样式
+ * 媒体插入对话框、元数据编辑对话框等
+ */
+
+/* ========== 遮罩层 ========== */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1999;
+    display: none;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* ========== 对话框基础 ========== */
+.media-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    transition: all var(--transition-fast);
+    background: var(--color-bg-white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    display: none;
+    font-family: var(--font-sans);
+}
+
+.media-dialog.active {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+
+/* ========== 对话框头部 ========== */
+.dialog-header {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ========== 对话框内容 ========== */
+.dialog-body {
+    margin-bottom: var(--spacing-lg);
+}
+
+.dialog-input {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+}
+
+.dialog-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* ========== 尺寸选项 ========== */
+.size-options {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.size-option {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.size-option:hover,
+.size-option.active {
+    border-color: var(--color-primary);
+    background: var(--color-info-bg);
+}
+
+/* ========== 对话框按钮 ========== */
+.dialog-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+}
+
+.dialog-button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all var(--transition-normal);
+}
+
+.dialog-button.primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.dialog-button.primary:hover {
+    background: var(--color-primary-light);
+}
+
+.dialog-button.cancel {
+    background: var(--color-border);
+    color: var(--color-text-muted);
+}
+
+.dialog-button.cancel:hover {
+    background: #d0d0d0;
+}
+
+/* ========== 元数据对话框特定样式 ========== */
+#metaDialog {
+    max-width: 500px;
+}
+
+#metaDialog .dialog-body {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.meta-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.meta-form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 600;
+}
+
+.meta-form-full {
+    margin-top: var(--spacing-md);
+}
+
+.temp-input-group {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.temp-input-group input {
+    width: 80px;
+}
+
+.temp-input-group select {
+    width: auto;
+}

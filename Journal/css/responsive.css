@@ -1,0 +1,146 @@
+/**
+ * responsive.css - 响应式样式
+ * 移动端适配和打印样式
+ */
+
+/* ========== 打印样式 ========== */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .toolbar {
+        display: none;
+    }
+    
+    .book-container {
+        box-shadow: none;
+    }
+    
+    .content-page {
+        page-break-inside: avoid;
+    }
+    
+    .journal-entry {
+        page-break-inside: avoid;
+    }
+    
+    .figure-container {
+        page-break-inside: avoid;
+    }
+}
+
+/* ========== 移动端响应式 ========== */
+@media (max-width: 768px) {
+    .content-page {
+        column-count: 1;
+        padding: var(--spacing-xxl) var(--spacing-xl);
+    }
+    
+    .cover-title {
+        font-size: 48px;
+    }
+    
+    .margin-note {
+        float: none;
+        width: 100%;
+        margin: var(--spacing-lg) 0;
+    }
+    
+    .toolbar {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+        padding: var(--spacing-sm);
+    }
+    
+    .toolbar-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .toolbar button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    /* 目录页响应式 */
+    .toc-page {
+        padding: var(--spacing-xxl) var(--spacing-xl);
+    }
+    
+    .toc-header {
+        font-size: 32px;
+    }
+    
+    /* 章节页响应式 */
+    .chapter-title-page {
+        font-size: 36px;
+    }
+    
+    .chapter-number-large {
+        font-size: 80px;
+    }
+    
+    /* 封面响应式 */
+    .cover-content {
+        padding: var(--spacing-xl);
+    }
+    
+    .cover-subtitle {
+        font-size: 20px;
+        letter-spacing: 4px;
+    }
+    
+    /* 条目响应式 */
+    .entry-title {
+        font-size: 24px;
+    }
+    
+    .entry-meta {
+        gap: var(--spacing-sm);
+    }
+    
+    /* 图表响应式 */
+    .figure-row {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .subfigures {
+        flex-direction: column;
+    }
+    
+    .subfigure {
+        min-width: auto;
+        width: 100%;
+    }
+}
+
+/* ========== 小屏幕设备 ========== */
+@media (max-width: 480px) {
+    .cover-title {
+        font-size: 36px;
+    }
+    
+    .cover-subtitle {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+    
+    .entry-content p:first-child:first-letter {
+        font-size: 48px;
+    }
+    
+    .media-dialog {
+        width: 90%;
+        padding: var(--spacing-lg);
+    }
+    
+    .size-options {
+        flex-wrap: wrap;
+    }
+    
+    .size-option {
+        flex: 0 0 calc(33.33% - 10px);
+    }
+}
