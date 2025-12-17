@@ -1,13 +1,20 @@
 /**
  * main.css - 主样式入口
- * 导入所有CSS模块
+ * 精美教科书风格日记本 - 灵感来自 David Myers / Elliot Aronson 社会心理学教材
  */
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+/* ========== Google Fonts - 专业教科书字体组合 ========== */
+/* 
+ * Playfair Display - 优雅的展示字体，用于大标题
+ * Crimson Pro - 经典衬线字体，用于正文，可读性极佳
+ * Inter - 现代无衬线字体，用于UI元素和辅助文字
+ * JetBrains Mono - 等宽字体，用于代码和数字
+ */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* CSS模块导入 */
+/* ========== CSS模块导入 ========== */
 @import './base.css';
+@import './icons.css';
 @import './cover.css';
 @import './toc.css';
 @import './chapter.css';

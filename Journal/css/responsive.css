@@ -1,106 +1,320 @@
 /**
  * responsive.css - 响应式样式
- * 移动端适配和打印样式
+ * 多设备适配和打印样式
  */
 
 /* ========== 打印样式 ========== */
 @media print {
+    /* 基础重置 */
     body {
-        background: white;
+        background: white !important;
+        color: black !important;
+        font-size: 11pt;
+        line-height: 1.5;
     }
     
-    .toolbar {
+    /* 隐藏非打印元素 */
+    .toolbar,
+    .overlay,
+    .media-dialog {
+        display: none !important;
+    }
+    
+    /* 书籍容器 */
+    .book-container {
+        box-shadow: none !important;
+        margin: 0;
+        max-width: 100%;
+        border-radius: 0;
+    }
+    
+    .book-container::before,
+    .book-container::after {
         display: none;
     }
     
-    .book-container {
-        box-shadow: none;
+    /* 封面打印优化 */
+    .cover-page {
+        page-break-after: always;
+        background: var(--color-primary) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
     
+    /* 目录页 */
+    .toc-page {
+        page-break-after: always;
+    }
+    
+    .toc-page::before {
+        display: none;
+    }
+    
+    /* 章节页 */
+    .chapter-page {
+        page-break-before: always;
+        page-break-after: always;
+    }
+    
+    .chapter-page::before,
+    .chapter-page::after {
+        display: none;
+    }
+    
+    /* 内容页 */
     .content-page {
-        page-break-inside: avoid;
+        column-count: 1 !important;
+        padding: 1cm;
+        background: white !important;
     }
     
+    .content-page::before {
+        display: none;
+    }
+    
+    /* 日记条目 */
     .journal-entry {
         page-break-inside: avoid;
     }
     
-    .figure-container {
+    .entry-header {
+        background: none !important;
+        border-left-color: black;
+    }
+    
+    /* 组件 */
+    .figure-container,
+    .textbook-quote,
+    .key-concept,
+    .margin-note,
+    .data-table,
+    .equation {
         page-break-inside: avoid;
+        box-shadow: none !important;
+    }
+    
+    /* 隐藏悬停效果 */
+    .figure:hover,
+    .toc-entry:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* 链接打印显示URL */
+    .entry-content a::after {
+        content: " (" attr(href) ")";
+        font-size: 9pt;
+        color: #666;
+    }
+}
+
+/* ========== 大屏幕优化 ========== */
+@media (min-width: 1400px) {
+    .book-container {
+        max-width: 1100px;
+    }
+    
+    .content-page {
+        padding: var(--spacing-24) var(--spacing-20);
+    }
+}
+
+/* ========== 平板设备 ========== */
+@media (max-width: 1024px) {
+    .book-container {
+        margin: var(--spacing-6) auto;
+        max-width: calc(100% - var(--spacing-12));
+    }
+    
+    .content-page {
+        column-count: 1;
+        padding: var(--spacing-16) var(--spacing-12);
+    }
+    
+    .cover-content {
+        padding: var(--spacing-10) var(--spacing-8);
     }
 }
 
 /* ========== 移动端响应式 ========== */
 @media (max-width: 768px) {
+    /* 基础调整 */
+    html {
+        font-size: 15px;
+    }
+    
+    .book-container {
+        margin: 0;
+        max-width: 100%;
+        border-radius: 0;
+    }
+    
+    .book-container::before,
+    .book-container::after {
+        display: none;
+    }
+    
+    /* 内容页 */
     .content-page {
         column-count: 1;
-        padding: var(--spacing-xxl) var(--spacing-xl);
+        padding: var(--spacing-12) var(--spacing-6);
+    }
+    
+    .content-page.single-column {
+        padding: var(--spacing-12) var(--spacing-6);
+    }
+    
+    .page-header {
+        left: var(--spacing-6);
+        right: var(--spacing-6);
+        top: var(--spacing-4);
+    }
+    
+    .page-footer {
+        left: var(--spacing-6);
+        right: var(--spacing-6);
+        bottom: var(--spacing-6);
+    }
+    
+    /* 封面 */
+    .cover-page::after {
+        height: 4px;
+    }
+    
+    .cover-content {
+        padding: var(--spacing-8) var(--spacing-6);
     }
     
     .cover-title {
-        font-size: 48px;
+        font-size: clamp(2.5rem, 10vw, 4rem);
     }
     
-    .margin-note {
-        float: none;
-        width: 100%;
-        margin: var(--spacing-lg) 0;
-    }
-    
-    .toolbar {
-        top: var(--spacing-sm);
-        right: var(--spacing-sm);
-        padding: var(--spacing-sm);
-    }
-    
-    .toolbar-buttons {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .toolbar button {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    /* 目录页响应式 */
-    .toc-page {
-        padding: var(--spacing-xxl) var(--spacing-xl);
-    }
-    
-    .toc-header {
-        font-size: 32px;
-    }
-    
-    /* 章节页响应式 */
-    .chapter-title-page {
-        font-size: 36px;
-    }
-    
-    .chapter-number-large {
-        font-size: 80px;
-    }
-    
-    /* 封面响应式 */
-    .cover-content {
-        padding: var(--spacing-xl);
+    .cover-title::after {
+        width: 80px;
+        height: 3px;
     }
     
     .cover-subtitle {
-        font-size: 20px;
-        letter-spacing: 4px;
+        font-size: var(--text-base);
+        letter-spacing: var(--tracking-wider);
     }
     
-    /* 条目响应式 */
+    .cover-author {
+        font-size: var(--text-lg);
+    }
+    
+    /* 目录页 */
+    .toc-page {
+        padding: var(--spacing-12) var(--spacing-6);
+    }
+    
+    .toc-page::before {
+        left: var(--spacing-4);
+        width: 2px;
+    }
+    
+    .toc-header {
+        font-size: var(--text-3xl);
+        padding-left: var(--spacing-4);
+    }
+    
+    .toc-content {
+        padding-left: var(--spacing-4);
+    }
+    
+    .toc-entry {
+        padding: var(--spacing-2) var(--spacing-3);
+    }
+    
+    .toc-number {
+        font-size: var(--text-base);
+        min-width: 40px;
+    }
+    
+    .toc-title {
+        font-size: var(--text-base);
+    }
+    
+    /* 章节页 */
+    .chapter-page::after {
+        top: var(--spacing-6);
+        left: var(--spacing-6);
+        right: var(--spacing-6);
+        bottom: var(--spacing-6);
+    }
+    
+    .chapter-content {
+        padding: var(--spacing-6);
+    }
+    
+    .chapter-title-page {
+        font-size: clamp(1.75rem, 6vw, 2.5rem);
+    }
+    
+    .chapter-number-large {
+        font-size: clamp(5rem, 15vw, 8rem);
+    }
+    
+    .chapter-subtitle {
+        font-size: var(--text-base);
+    }
+    
+    /* 日记条目 */
+    .entry-header {
+        padding: var(--spacing-4) var(--spacing-5);
+        margin-bottom: var(--spacing-6);
+    }
+    
+    .entry-header::before {
+        width: 40px;
+        height: 40px;
+    }
+    
     .entry-title {
-        font-size: 24px;
+        font-size: var(--text-2xl);
     }
     
     .entry-meta {
-        gap: var(--spacing-sm);
+        gap: var(--spacing-2);
     }
     
-    /* 图表响应式 */
+    .meta-item {
+        padding: var(--spacing-1) var(--spacing-2);
+        font-size: var(--text-xs);
+    }
+    
+    /* 首字下沉调整 */
+    .entry-content p:first-of-type:first-letter {
+        font-size: 3rem;
+    }
+    
+    /* 边注 */
+    .margin-note {
+        float: none;
+        width: 100%;
+        margin: var(--spacing-6) 0;
+    }
+    
+    .margin-note::before {
+        top: var(--spacing-2);
+        right: var(--spacing-2);
+    }
+    
+    /* 组件 */
+    .textbook-quote {
+        padding: var(--spacing-6);
+        padding-left: var(--spacing-8);
+    }
+    
+    .textbook-quote::before {
+        font-size: 3rem;
+        left: var(--spacing-2);
+    }
+    
+    .key-concept {
+        padding: var(--spacing-4);
+    }
+    
     .figure-row {
         flex-direction: column;
         align-items: center;
@@ -114,26 +328,56 @@
         min-width: auto;
         width: 100%;
     }
-}
-
-/* ========== 小屏幕设备 ========== */
-@media (max-width: 480px) {
-    .cover-title {
-        font-size: 36px;
+    
+    .figure.small,
+    .figure.medium,
+    .figure.large {
+        width: calc(100% - var(--spacing-4));
     }
     
-    .cover-subtitle {
-        font-size: 16px;
-        letter-spacing: 2px;
+    /* 表格滚动 */
+    .data-table {
+        display: block;
+        overflow-x: auto;
     }
     
-    .entry-content p:first-child:first-letter {
-        font-size: 48px;
+    /* 工具栏 */
+    .toolbar {
+        top: var(--spacing-3);
+        right: var(--spacing-3);
+        padding: var(--spacing-3);
+        max-width: 180px;
     }
     
+    .toolbar-title {
+        font-size: 10px;
+        margin-bottom: var(--spacing-2);
+        padding-bottom: var(--spacing-2);
+    }
+    
+    .toolbar-buttons {
+        gap: var(--spacing-1);
+    }
+    
+    .toolbar button {
+        padding: var(--spacing-2) var(--spacing-3);
+        font-size: var(--text-xs);
+    }
+    
+    /* 对话框 */
     .media-dialog {
-        width: 90%;
-        padding: var(--spacing-lg);
+        min-width: auto;
+        width: calc(100% - var(--spacing-8));
+        max-width: none;
+    }
+    
+    #metaDialog {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .meta-form-grid {
+        grid-template-columns: 1fr;
     }
     
     .size-options {
@@ -141,6 +385,65 @@
     }
     
     .size-option {
-        flex: 0 0 calc(33.33% - 10px);
+        flex: 0 0 calc(50% - var(--spacing-1));
+    }
+}
+
+/* ========== 小屏幕设备 ========== */
+@media (max-width: 480px) {
+    html {
+        font-size: 14px;
+    }
+    
+    .cover-title {
+        font-size: clamp(2rem, 12vw, 3rem);
+    }
+    
+    .cover-subtitle {
+        font-size: var(--text-sm);
+        letter-spacing: var(--tracking-wide);
+    }
+    
+    .entry-title {
+        font-size: var(--text-xl);
+    }
+    
+    .entry-content p:first-of-type:first-letter {
+        font-size: 2.5rem;
+    }
+    
+    .chapter-title-page {
+        font-size: var(--text-2xl);
+    }
+    
+    .toc-header {
+        font-size: var(--text-2xl);
+    }
+    
+    .size-option {
+        flex: 0 0 calc(33.33% - var(--spacing-1));
+        padding: var(--spacing-2);
+        font-size: var(--text-xs);
+    }
+    
+    .dialog-button {
+        padding: var(--spacing-2) var(--spacing-4);
+        font-size: var(--text-xs);
+    }
+}
+
+/* ========== 暗色模式支持（可选） ========== */
+@media (prefers-color-scheme: dark) {
+    /* 如需暗色模式，可在此添加样式覆盖 */
+}
+
+/* ========== 减少动画模式 ========== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

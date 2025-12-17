@@ -1,6 +1,6 @@
 /**
  * dialog.css - 对话框样式
- * 媒体插入对话框、元数据编辑对话框等
+ * 精美的模态对话框设计
  */
 
 /* ========== 遮罩层 ========== */
@@ -10,13 +10,17 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(15, 39, 68, 0.6);
+    backdrop-filter: blur(4px);
     z-index: 1999;
     display: none;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
 }
 
 .overlay.active {
     display: block;
+    opacity: 1;
 }
 
 /* ========== 对话框基础 ========== */
@@ -26,111 +30,232 @@
     left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
     opacity: 0;
-    transition: all var(--transition-fast);
+    transition: all var(--transition-normal);
     background: var(--color-bg-white);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    padding: 0;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--shadow-2xl);
     z-index: 2000;
     display: none;
     font-family: var(--font-sans);
+    min-width: 400px;
+    max-width: 90vw;
+    overflow: hidden;
+    
+    /* 精美边框 */
+    border: 1px solid rgba(var(--color-primary-rgb), 0.1);
 }
 
 .media-dialog.active {
     display: block;
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
+    animation: scaleIn 0.3s ease-out;
 }
 
 /* ========== 对话框头部 ========== */
 .dialog-header {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-lg);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-text-inverse);
+    padding: var(--spacing-5) var(--spacing-6);
+    background: linear-gradient(
+        135deg,
+        var(--color-primary) 0%,
+        var(--color-primary-dark) 100%
+    );
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+}
+
+/* 头部图标 */
+.dialog-header [data-lucide] {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2;
+    opacity: 0.9;
+}
+
+/* 头部装饰 */
+.dialog-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(
+        90deg,
+        var(--color-accent) 0%,
+        var(--color-accent-light) 50%,
+        var(--color-accent) 100%
+    );
 }
 
 /* ========== 对话框内容 ========== */
 .dialog-body {
-    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-6);
+    background: var(--color-bg-cream);
 }
 
 .dialog-input {
     display: block;
     width: 100%;
-    padding: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-3) var(--spacing-4);
+    margin-bottom: var(--spacing-4);
     border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 14px;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    font-family: var(--font-sans);
+    background: var(--color-bg-white);
+    transition: all var(--transition-fast);
 }
 
 .dialog-input:focus {
     outline: none;
     border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.dialog-input::placeholder {
+    color: var(--color-text-hint);
+}
+
+/* 标签样式 */
+.dialog-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-2);
+}
+
+/* 标签图标 */
+.dialog-label [data-lucide],
+.dialog-label .label-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--color-primary);
+    opacity: 0.7;
+    stroke-width: 2;
 }
 
 /* ========== 尺寸选项 ========== */
 .size-options {
     display: flex;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-4);
 }
 
 .size-option {
     flex: 1;
-    padding: 8px;
+    padding: var(--spacing-3) var(--spacing-2);
     text-align: center;
     border: 2px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: all var(--transition-fast);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: var(--color-bg-white);
 }
 
-.size-option:hover,
+.size-option:hover {
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
+    background: rgba(var(--color-primary-rgb), 0.03);
+}
+
 .size-option.active {
     border-color: var(--color-primary);
-    background: var(--color-info-bg);
+    background: rgba(var(--color-primary-rgb), 0.08);
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
-/* ========== 对话框按钮 ========== */
+/* ========== 复选框样式 ========== */
+.dialog-body label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.dialog-body input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+/* ========== 对话框按钮区 ========== */
 .dialog-buttons {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-3);
     justify-content: flex-end;
+    padding: var(--spacing-5) var(--spacing-6);
+    background: var(--color-bg-light);
+    border-top: 1px solid var(--color-border);
 }
 
 .dialog-button {
-    padding: var(--spacing-sm) var(--spacing-lg);
+    padding: var(--spacing-3) var(--spacing-6);
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--text-sm);
     font-weight: 600;
-    transition: all var(--transition-normal);
+    font-family: var(--font-sans);
+    transition: all var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
 }
 
 .dialog-button.primary {
-    background: var(--color-primary);
-    color: white;
+    background: linear-gradient(
+        to bottom,
+        var(--color-primary) 0%,
+        var(--color-primary-dark) 100%
+    );
+    color: var(--color-text-inverse);
+    box-shadow: 0 2px 4px rgba(var(--color-primary-rgb), 0.3);
 }
 
 .dialog-button.primary:hover {
-    background: var(--color-primary-light);
+    background: linear-gradient(
+        to bottom,
+        var(--color-primary-light) 0%,
+        var(--color-primary) 100%
+    );
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(var(--color-primary-rgb), 0.4);
 }
 
 .dialog-button.cancel {
-    background: var(--color-border);
+    background: var(--color-bg-white);
     color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
 }
 
 .dialog-button.cancel:hover {
-    background: #d0d0d0;
+    background: var(--color-bg-light);
+    color: var(--color-text);
+    border-color: var(--color-border-dark);
 }
 
 /* ========== 元数据对话框特定样式 ========== */
 #metaDialog {
-    max-width: 500px;
+    min-width: 480px;
+    max-width: 520px;
 }
 
 #metaDialog .dialog-body {
@@ -138,25 +263,46 @@
     overflow-y: auto;
 }
 
+/* 自定义滚动条 */
+#metaDialog .dialog-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#metaDialog .dialog-body::-webkit-scrollbar-track {
+    background: var(--color-bg-light);
+    border-radius: var(--radius-full);
+}
+
+#metaDialog .dialog-body::-webkit-scrollbar-thumb {
+    background: var(--color-border-dark);
+    border-radius: var(--radius-full);
+}
+
+#metaDialog .dialog-body::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary-light);
+}
+
 .meta-form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
+    gap: var(--spacing-4);
 }
 
 .meta-form-label {
     display: block;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-2);
     font-weight: 600;
+    font-size: var(--text-sm);
+    color: var(--color-text);
 }
 
 .meta-form-full {
-    margin-top: var(--spacing-md);
+    margin-top: var(--spacing-4);
 }
 
 .temp-input-group {
     display: flex;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-2);
 }
 
 .temp-input-group input {
@@ -165,4 +311,13 @@
 
 .temp-input-group select {
     width: auto;
+}
+
+/* Select 样式 */
+.dialog-body select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a5a5a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: var(--spacing-10);
 }

@@ -1,43 +1,117 @@
 /**
  * base.css - 基础样式和CSS变量
- * 定义全局CSS变量、重置样式和通用样式
+ * 精美教科书风格设计系统 - 灵感来自 David Myers 社会心理学教材
  */
 
 /* ========== CSS变量定义 ========== */
 :root {
-    /* 主色调 */
-    --color-primary: #1a4d7e;
-    --color-primary-light: #2a5d8e;
-    --color-primary-dark: #0d3a5f;
+    /* 主色调 - 典雅深蓝，学术感强 */
+    --color-primary: #1e3a5f;
+    --color-primary-light: #2c5282;
+    --color-primary-lighter: #4a7ab8;
+    --color-primary-dark: #0f2744;
+    --color-primary-rgb: 30, 58, 95;
     
-    /* 中性色 */
-    --color-text: #2c2c2c;
-    --color-text-light: #333;
-    --color-text-muted: #666;
-    --color-text-hint: #999;
+    /* 强调色 - 温暖的金铜色 */
+    --color-accent: #c9a227;
+    --color-accent-light: #e6c35a;
+    --color-accent-dark: #a17f1a;
+    --color-accent-rgb: 201, 162, 39;
     
-    /* 背景色 */
-    --color-bg: #e8e4e0;
-    --color-bg-white: white;
-    --color-bg-light: #f8f8f8;
-    --color-bg-lighter: #f5f5f5;
+    /* 辅助色 - 优雅的酒红 */
+    --color-secondary: #8b2942;
+    --color-secondary-light: #a94460;
+    --color-secondary-dark: #6d1f33;
+    
+    /* 中性色 - 温暖的灰色调 */
+    --color-text: #1a1a1a;
+    --color-text-light: #2d2d2d;
+    --color-text-muted: #5a5a5a;
+    --color-text-hint: #8a8a8a;
+    --color-text-inverse: #ffffff;
+    
+    /* 背景色 - 纸张质感 */
+    --color-bg: #f5f1eb;
+    --color-bg-warm: #faf8f5;
+    --color-bg-white: #ffffff;
+    --color-bg-cream: #fdfcfa;
+    --color-bg-light: #f9f7f4;
+    --color-bg-lighter: #fcfbf9;
+    --color-bg-paper: linear-gradient(to bottom, #fdfcfa 0%, #f8f6f2 100%);
     
     /* 边框色 */
-    --color-border: #e0e0e0;
-    --color-border-light: #ccc;
+    --color-border: #e8e4df;
+    --color-border-light: #d4cfc7;
+    --color-border-dark: #c5bfb5;
     
-    /* 功能色 */
-    --color-warning: #f0c419;
-    --color-warning-dark: #d4a017;
-    --color-warning-bg: #fff9e6;
-    --color-info-bg: #f5f9fc;
+    /* 功能色 - 教科书风格的信息框 */
+    --color-concept-bg: #fef9e7;
+    --color-concept-border: #f4d03f;
+    --color-concept-text: #7d6608;
     
-    /* 字体 */
-    --font-serif: 'Crimson Text', 'Times New Roman', Georgia, serif;
-    --font-sans: 'Source Sans Pro', sans-serif;
-    --font-mono: 'Courier New', monospace;
+    --color-quote-bg: #eef4f9;
+    --color-quote-border: #3182ce;
+    --color-quote-text: #1e3a5f;
     
-    /* 间距 */
+    --color-note-bg: #f0fdf4;
+    --color-note-border: #22c55e;
+    --color-note-text: #166534;
+    
+    --color-warning-bg: #fef2f2;
+    --color-warning-border: #ef4444;
+    --color-warning-text: #991b1b;
+    
+    /* 字体系统 - 专业教科书排版 */
+    --font-display: 'Playfair Display', 'Georgia', serif;
+    --font-serif: 'Crimson Pro', 'Crimson Text', 'Georgia', serif;
+    --font-sans: 'Inter', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    
+    /* 字体大小系统 */
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 3.75rem;
+    --text-7xl: 4.5rem;
+    
+    /* 行高系统 */
+    --leading-tight: 1.25;
+    --leading-snug: 1.375;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.625;
+    --leading-loose: 1.8;
+    
+    /* 字间距 */
+    --tracking-tighter: -0.05em;
+    --tracking-tight: -0.025em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.025em;
+    --tracking-wider: 0.05em;
+    --tracking-widest: 0.1em;
+    
+    /* 间距系统 */
+    --spacing-px: 1px;
+    --spacing-0: 0;
+    --spacing-1: 0.25rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-4: 1rem;
+    --spacing-5: 1.25rem;
+    --spacing-6: 1.5rem;
+    --spacing-8: 2rem;
+    --spacing-10: 2.5rem;
+    --spacing-12: 3rem;
+    --spacing-16: 4rem;
+    --spacing-20: 5rem;
+    --spacing-24: 6rem;
+    
+    /* 旧版兼容 */
     --spacing-xs: 5px;
     --spacing-sm: 10px;
     --spacing-md: 15px;
@@ -46,19 +120,45 @@
     --spacing-xxl: 40px;
     
     /* 圆角 */
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 10px;
+    --radius-none: 0;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+    --radius-full: 9999px;
     
-    /* 阴影 */
-    --shadow-sm: 0 2px 5px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 20px rgba(0,0,0,0.15);
-    --shadow-lg: 0 10px 40px rgba(0,0,0,0.3);
-    --shadow-book: 0 0 40px rgba(0,0,0,0.4), inset -2px 0 2px rgba(0,0,0,0.1), inset 2px 0 2px rgba(0,0,0,0.1);
+    /* 阴影系统 - 精细的层次感 */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
     
-    /* 过渡 */
-    --transition-fast: 0.3s ease;
-    --transition-normal: 0.3s;
+    /* 书籍专用阴影 */
+    --shadow-book: 
+        0 0 60px rgba(0, 0, 0, 0.12),
+        0 0 20px rgba(0, 0, 0, 0.08),
+        inset 0 0 80px rgba(255, 255, 255, 0.1);
+    --shadow-book-hover: 
+        0 0 80px rgba(0, 0, 0, 0.15),
+        0 0 30px rgba(0, 0, 0, 0.1),
+        inset 0 0 80px rgba(255, 255, 255, 0.15);
+    --shadow-page: 
+        0 1px 3px rgba(0, 0, 0, 0.05),
+        0 0 40px rgba(0, 0, 0, 0.03);
+    
+    /* 过渡动画 */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    
+    /* 装饰线条 */
+    --ornament-line: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    --ornament-dot: radial-gradient(circle, var(--color-accent) 2px, transparent 2px);
 }
 
 /* ========== 重置样式 ========== */
@@ -69,76 +169,209 @@
 }
 
 /* ========== 基础样式 ========== */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 body {
     font-family: var(--font-serif);
-    line-height: 1.6;
+    line-height: var(--leading-relaxed);
     background: var(--color-bg);
     color: var(--color-text);
-    font-size: 16px;
+    font-size: var(--text-base);
+    min-height: 100vh;
+    
+    /* 微妙的纸张纹理背景 */
+    background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.6) 0%, transparent 75%),
+        linear-gradient(180deg, #f5f1eb 0%, #ebe7e0 100%);
+}
+
+/* 文本选择样式 */
+::selection {
+    background: rgba(var(--color-primary-rgb), 0.2);
+    color: var(--color-primary-dark);
+}
+
+::-moz-selection {
+    background: rgba(var(--color-primary-rgb), 0.2);
+    color: var(--color-primary-dark);
 }
 
 /* ========== 书籍容器 ========== */
 .book-container {
     max-width: 1000px;
-    margin: 20px auto;
+    margin: var(--spacing-10) auto;
     background: var(--color-bg-white);
     box-shadow: var(--shadow-book);
     position: relative;
+    transition: box-shadow var(--transition-slow);
+    
+    /* 书籍边缘效果 */
+    border-radius: 2px 6px 6px 2px;
 }
 
-/* 书脊效果 */
+.book-container:hover {
+    box-shadow: var(--shadow-book-hover);
+}
+
+/* 书脊效果 - 更精细 */
 .book-container::before {
     content: '';
     position: absolute;
-    left: 40px;
+    left: 0;
     top: 0;
     bottom: 0;
-    width: 2px;
-    background: linear-gradient(to right, transparent, rgba(0,0,0,0.1));
+    width: 50px;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.06) 0%,
+        rgba(0, 0, 0, 0.02) 30%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 书脊装订线 */
+.book-container::after {
+    content: '';
+    position: absolute;
+    left: 48px;
+    top: 20px;
+    bottom: 20px;
+    width: 1px;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.08) 10%,
+        rgba(0, 0, 0, 0.08) 90%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 1;
 }
 
 /* ========== 可编辑区域 ========== */
 .editable {
     cursor: text;
     position: relative;
-    transition: background var(--transition-fast);
+    transition: all var(--transition-fast);
+    border-radius: var(--radius-sm);
 }
 
 .editable:hover {
-    background: rgba(26, 77, 126, 0.05);
+    background: rgba(var(--color-primary-rgb), 0.03);
 }
 
 .editable:focus {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 2px;
-    background: var(--color-bg-white);
+    outline: none;
+    background: rgba(var(--color-primary-rgb), 0.05);
+    box-shadow: 
+        0 0 0 2px rgba(var(--color-primary-rgb), 0.1),
+        inset 0 0 0 1px rgba(var(--color-primary-rgb), 0.15);
 }
 
-.editable:focus::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: -5px;
-    right: -5px;
-    bottom: -5px;
-    border: 2px solid var(--color-primary);
-    border-radius: var(--radius-sm);
-    opacity: 0.3;
-    pointer-events: none;
+/* ========== 装饰元素 ========== */
+
+/* 装饰分隔线 */
+.ornament-line {
+    height: 1px;
+    background: var(--ornament-line);
+    margin: var(--spacing-8) 0;
+}
+
+/* 装饰花纹 */
+.ornament-flourish {
+    text-align: center;
+    font-size: var(--text-2xl);
+    color: var(--color-accent);
+    opacity: 0.6;
+    margin: var(--spacing-6) 0;
+    font-family: serif;
+}
+
+.ornament-flourish::before {
+    content: '❧';
+}
+
+/* 小型装饰点 */
+.ornament-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-3);
+    margin: var(--spacing-6) 0;
+}
+
+.ornament-dots::before,
+.ornament-dots::after {
+    content: '•';
+    color: var(--color-accent);
+    opacity: 0.5;
+}
+
+.ornament-dots span {
+    color: var(--color-accent);
 }
 
 /* ========== 加载动画 ========== */
 .loading {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: var(--radius-full);
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* 渐入动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 滑入动画 */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* 缩放弹入 */
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ========== 实用工具类 ========== */
+.text-primary { color: var(--color-primary); }
+.text-accent { color: var(--color-accent); }
+.text-muted { color: var(--color-text-muted); }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.font-display { font-family: var(--font-display); }
+.font-serif { font-family: var(--font-serif); }
+.font-sans { font-family: var(--font-sans); }
+
+.uppercase { text-transform: uppercase; }
+.italic { font-style: italic; }
+.tracking-wide { letter-spacing: var(--tracking-wide); }
+.tracking-wider { letter-spacing: var(--tracking-wider); }
+
+/* 隐藏滚动条但保持可滚动 */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
 }

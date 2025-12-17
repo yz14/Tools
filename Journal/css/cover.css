@@ -1,17 +1,73 @@
 /**
  * cover.css - 封面页样式
- * 教科书风格的封面设计
+ * 精美教科书风格封面 - 参考 David Myers / Elliot Aronson 社会心理学教材设计
  */
 
 /* ========== 封面页 ========== */
 .cover-page {
     min-height: 100vh;
-    background: var(--color-primary);
-    color: white;
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    
+    /* 深邃的渐变背景 - 类似专业教科书 */
+    background: 
+        linear-gradient(135deg, 
+            var(--color-primary-dark) 0%, 
+            var(--color-primary) 40%,
+            var(--color-primary-light) 100%
+        );
+    color: var(--color-text-inverse);
+}
+
+/* 封面装饰图案 - 精美的几何纹理 */
+.cover-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        /* 斜线纹理 */
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.02) 2px,
+            rgba(255, 255, 255, 0.02) 4px
+        ),
+        /* 微妙的圆点图案 */
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(255, 255, 255, 0.08) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 20%,
+            rgba(var(--color-accent-rgb), 0.15) 0%,
+            transparent 40%
+        );
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* 封面底部装饰条 */
+.cover-page::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: linear-gradient(
+        90deg,
+        var(--color-accent) 0%,
+        var(--color-accent-light) 50%,
+        var(--color-accent) 100%
+    );
+    z-index: 10;
 }
 
 /* ========== 封面图片 ========== */
@@ -22,7 +78,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    opacity: 0.3;
+    z-index: 0;
 }
 
 .cover-image {
@@ -30,76 +86,192 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 0.25;
+    filter: saturate(0.8) contrast(1.1);
+    transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.cover-page:hover .cover-image {
+    opacity: 0.3;
+    transform: scale(1.02);
 }
 
 /* ========== 封面内容 ========== */
 .cover-content {
     position: relative;
-    z-index: 1;
-    padding: 60px;
+    z-index: 5;
+    padding: var(--spacing-16) var(--spacing-12);
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    max-width: 900px;
 }
 
+/* ========== 封面头部 ========== */
 .cover-header {
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .edition-info {
     font-family: var(--font-sans);
-    font-size: 14px;
-    letter-spacing: 3px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
-    opacity: 0.8;
-    margin-bottom: var(--spacing-sm);
+    opacity: 0.7;
+    padding: var(--spacing-2) var(--spacing-4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
 }
 
+/* ========== 封面主体 ========== */
 .cover-main {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: var(--spacing-xxl) 0;
+    padding: var(--spacing-12) 0;
 }
 
+/* 封面标题 */
 .cover-title {
-    font-size: 84px;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 8vw, 6rem);
     font-weight: 700;
-    line-height: 0.9;
-    margin-bottom: var(--spacing-xl);
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-    letter-spacing: -2px;
+    line-height: 0.95;
+    margin-bottom: var(--spacing-8);
+    letter-spacing: var(--tracking-tight);
+    
+    /* 精美的文字阴影 */
+    text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 8px 24px rgba(0, 0, 0, 0.2);
+    
+    /* 标题下划线装饰 */
+    position: relative;
+    display: inline-block;
 }
 
+.cover-title::after {
+    content: '';
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 120px;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        var(--color-accent) 0%,
+        var(--color-accent-light) 100%
+    );
+    border-radius: var(--radius-full);
+}
+
+/* 副标题 */
 .cover-subtitle {
     font-family: var(--font-sans);
-    font-size: 28px;
+    font-size: var(--text-xl);
     font-weight: 300;
-    letter-spacing: 8px;
+    letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
-    margin-bottom: var(--spacing-lg);
-    opacity: 0.9;
+    margin-bottom: var(--spacing-6);
+    margin-top: var(--spacing-8);
+    opacity: 0.85;
+    
+    /* 微妙的渐变文字效果 */
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.9) 0%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(255, 255, 255, 0.9) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
+/* 作者信息 */
 .cover-author {
-    font-size: 22px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 400;
     font-style: italic;
-    opacity: 0.8;
-    margin-top: var(--spacing-xxl);
+    opacity: 0.85;
+    margin-top: var(--spacing-10);
+    padding-left: var(--spacing-1);
+    
+    /* 作者名前的装饰 */
+    position: relative;
 }
 
+.cover-author::before {
+    content: '—';
+    margin-right: var(--spacing-3);
+    opacity: 0.6;
+}
+
+/* ========== 封面页脚 ========== */
 .cover-footer {
-    border-top: 2px solid rgba(255,255,255,0.3);
-    padding-top: var(--spacing-xl);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: var(--spacing-6);
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
 }
 
 .publisher {
     font-family: var(--font-sans);
-    font-size: 16px;
-    opacity: 0.7;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+.year {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    opacity: 0.4;
+    letter-spacing: var(--tracking-wider);
+}
+
+/* ========== 封面徽章/标签 ========== */
+.cover-badge {
+    position: absolute;
+    top: var(--spacing-8);
+    right: var(--spacing-8);
+    background: var(--color-accent);
+    color: var(--color-primary-dark);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+/* ========== 封面装饰元素 ========== */
+.cover-ornament {
+    position: absolute;
+    bottom: var(--spacing-20);
+    right: var(--spacing-12);
+    width: 200px;
+    height: 200px;
+    opacity: 0.1;
+    z-index: 2;
+}
+
+.cover-ornament svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
 }

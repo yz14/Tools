@@ -1,0 +1,263 @@
+/**
+ * icons.css - 图标系统样式
+ * 精美的Lucide图标样式定义
+ */
+
+/* ========== 基础图标样式 ========== */
+[data-lucide] {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    stroke: currentColor;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+/* ========== 工具栏图标 ========== */
+.toolbar [data-lucide] {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    opacity: 0.9;
+    transition: all var(--transition-fast);
+}
+
+.toolbar button:hover [data-lucide] {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.toolbar-title [data-lucide] {
+    width: 14px;
+    height: 14px;
+    color: var(--color-accent);
+    margin-right: 6px;
+}
+
+/* ========== 对话框图标 ========== */
+.dialog-header [data-lucide] {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    opacity: 0.9;
+    vertical-align: -0.2em;
+}
+
+.dialog-label [data-lucide],
+.label-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    color: var(--color-primary);
+    opacity: 0.8;
+    vertical-align: -0.1em;
+}
+
+/* ========== 元数据图标 ========== */
+.meta-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    color: var(--color-primary);
+    opacity: 0.7;
+    transition: all var(--transition-fast);
+}
+
+.meta-item:hover .meta-icon {
+    opacity: 1;
+    color: var(--color-accent);
+}
+
+/* ========== 组件图标 ========== */
+
+/* 笔记图标 */
+.note-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 4px;
+    color: var(--color-note-border);
+    vertical-align: -0.1em;
+}
+
+/* 概念图标 */
+.concept-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    color: var(--color-concept-accent);
+    vertical-align: -0.15em;
+    filter: drop-shadow(0 0 2px rgba(244, 208, 63, 0.5));
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 2px rgba(244, 208, 63, 0.3));
+    }
+    50% {
+        filter: drop-shadow(0 0 6px rgba(244, 208, 63, 0.6));
+    }
+}
+
+/* 引用图标 */
+.quote-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    color: var(--color-quote-border);
+    opacity: 0.6;
+}
+
+/* 警告图标 */
+.warning-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    color: var(--color-warning-text);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* 提示图标 */
+.tip-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    color: var(--color-note-border);
+}
+
+/* ========== 图表图标 ========== */
+.figure-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    color: var(--color-primary);
+    opacity: 0.6;
+}
+
+/* ========== 表格图标 ========== */
+.table-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    color: var(--color-primary);
+}
+
+/* ========== 公式图标 ========== */
+.equation-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    color: var(--color-primary);
+    opacity: 0.7;
+}
+
+/* ========== 参考文献图标 ========== */
+.reference-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 6px;
+    color: var(--color-accent);
+}
+
+/* ========== 图标尺寸变体 ========== */
+[data-lucide].icon-xs {
+    width: 12px;
+    height: 12px;
+}
+
+[data-lucide].icon-sm {
+    width: 14px;
+    height: 14px;
+}
+
+[data-lucide].icon-md {
+    width: 18px;
+    height: 18px;
+}
+
+[data-lucide].icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+[data-lucide].icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+/* ========== 图标颜色变体 ========== */
+[data-lucide].icon-primary {
+    color: var(--color-primary);
+}
+
+[data-lucide].icon-accent {
+    color: var(--color-accent);
+}
+
+[data-lucide].icon-success {
+    color: var(--color-note-border);
+}
+
+[data-lucide].icon-warning {
+    color: var(--color-concept-border);
+}
+
+[data-lucide].icon-danger {
+    color: var(--color-warning-border);
+}
+
+[data-lucide].icon-muted {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+}
+
+/* ========== 图标动画效果 ========== */
+[data-lucide].icon-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+[data-lucide].icon-pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+[data-lucide].icon-bounce {
+    animation: bounce 0.6s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+/* ========== 悬停效果 ========== */
+.icon-hover-scale:hover [data-lucide] {
+    transform: scale(1.15);
+}
+
+.icon-hover-rotate:hover [data-lucide] {
+    transform: rotate(15deg);
+}
+
+.icon-hover-color:hover [data-lucide] {
+    color: var(--color-accent);
+}
