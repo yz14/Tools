@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>笔记</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                packages: {'[+]': ['base', 'ams', 'newcommand', 'configmacros', 'action', 'bbox', 'boldsymbol', 'braket', 'cancel', 'color', 'enclose', 'mhchem', 'physics', 'upgreek', 'unicode', 'verb', 'colorv2']},
+                tags: 'ams',
+                tagSide: 'right',
+                tagIndent: '0.8em',
+                multlineWidth: '85%',
+                useLabelIds: true,
+                macros: {
+                    // 常用数学符号
+                    RR: "\\mathbb{R}",
+                    NN: "\\mathbb{N}",
+                    ZZ: "\\mathbb{Z}",
+                    QQ: "\\mathbb{Q}",
+                    CC: "\\mathbb{C}",
+                    // 向量和矩阵
+                    bm: ["\\boldsymbol{#1}", 1],
+                    vec: ["\\mathbf{#1}", 1],
+                    mat: ["\\mathbf{#1}", 1],
+                    // 微积分
+                    dd: "\\mathrm{d}",
+                    diff: ["\\frac{\\mathrm{d}#1}{\\mathrm{d}#2}", 2],
+                    pdiff: ["\\frac{\\partial #1}{\\partial #2}", 2],
+                    // 概率统计
+                    EE: "\\mathbb{E}",
+                    PP: "\\mathbb{P}",
+                    Var: "\\mathrm{Var}",
+                    Cov: "\\mathrm{Cov}",
+                    // 其他常用
+                    argmax: "\\operatorname*{arg\\,max}",
+                    argmin: "\\operatorname*{arg\\,min}",
+                    // 机器学习相关
+                    loss: "\\mathcal{L}",
+                    data: "\\mathcal{D}",
+                    model: "\\mathcal{M}"
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                displayAlign: 'left',
+                displayIndent: '2em'
+            },
+            loader: {
+                load: ['[tex]/color', '[tex]/bbox', '[tex]/colorv2']
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --ghibli-sky: #87CEEB;
+            --ghibli-grass: #90C695;
+            --ghibli-warm: #F4E4C1;
+            --ghibli-sunset: #FFB88C;
+            --ghibli-forest: #6B8E6F;
+            --ghibli-ocean: #5FA8D3;
+            --ghibli-lavender: #CDB4DB;
+            --ghibli-peach: #FFD6BA;
+            --ghibli-mint: #B7E4C7;
+            --ghibli-sage: #95B8A4;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --text-dark: #2C3E50;
+            --text-light: #5D6D7E;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, var(--ghibli-sky) 0%, var(--ghibli-warm) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px var(--shadow);
+            overflow: hidden;
+            min-height: 80vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--ghibli-ocean) 0%, var(--ghibli-forest) 100%);
+            padding: 24px 32px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 8px;
+        }
+
+        .breadcrumb-item {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .breadcrumb-item:hover {
+            opacity: 0.7;
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            opacity: 0.6;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ghibli-ocean) 0%, var(--ghibli-lavender) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--ghibli-mint);
+            color: var(--text-dark);
+        }
+
+        .btn-danger {
+            background: var(--ghibli-sunset);
+            color: white;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header .btn-group {
+            margin-top: 36px;
+            align-self: flex-start;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 32px;
+        }
+
+        /* Level Grid */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, var(--ghibli-peach) 0%, var(--ghibli-lavender) 100%);
+            padding: 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .level-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .level-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .level-card .count {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        /* Paper List */
+        .paper-item {
+            margin-bottom: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .paper-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 16px var(--shadow);
+        }
+
+        .paper-header {
+            background: linear-gradient(135deg, var(--ghibli-mint) 0%, var(--ghibli-sage) 100%);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .paper-number {
+            background: linear-gradient(135deg, #6B8E6F 0%, #5FA8D3 100%);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .paper-info {
+            flex: 1;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .paper-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .paper-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+
+        .paper-summary {
+            background: linear-gradient(135deg, var(--ghibli-peach) 0%, var(--ghibli-warm) 100%);
+            padding: 10px 20px 10px 68px;
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.;
+        }
+
+        /* Paper Detail View */
+        .paper-detail {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .detail-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        .detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .detail-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header .detail-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .link-button {
+            padding: 8px 8px;
+            background: var(--ghibli-ocean);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .link-button:hover {
+            background: var(--ghibli-forest);
+        }
+
+        .detail-content {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            column-count: 2;
+            column-gap: 40px;
+            column-rule: 1px solid #000;
+            text-align: justify;
+            hyphens: auto;
+            word-break: break-word;
+            font-family: 'Times New Roman', 'SimSun', '宋体', serif;
+            letter-spacing: 0.02em;
+        }
+
+        .detail-content h2 {
+            break-inside: avoid;
+            column-span: all;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            page-break-after: avoid;
+        }
+
+        .detail-content h3 {
+            break-inside: avoid;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            page-break-after: avoid;
+        }
+
+        .detail-content pre {
+            break-inside: avoid;
+            margin: 12px 0;
+        }
+
+        .detail-content p {
+            margin-bottom: 12px;
+            text-indent: 2em;
+            orphans: 2;
+            widows: 2;
+        }
+
+        .detail-content ul,
+        .detail-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .detail-content li {
+            margin-bottom: 6px;
+            break-inside: avoid;
+            orphans: 2;
+            widows: 2;
+            line-height: 1.7;
+        }
+
+        .detail-content code {
+            break-inside: avoid;
+        }
+
+        .detail-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 16px auto;
+            break-inside: avoid;
+        }
+
+        .detail-content h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 32px 0 16px;
+            color: var(--text-dark);
+            border-left: 4px solid var(--ghibli-ocean);
+            padding-left: 12px;
+            text-align: left;
+            font-family: 'Georgia', 'STSong', '华文宋体', 'SimSun', '宋体', serif;
+            letter-spacing: 0.03em;
+        }
+
+        .detail-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 20px 0 12px;
+            color: var(--text-dark);
+            text-align: left;
+            font-family: 'Georgia', 'STSong', '华文宋体', 'SimSun', '宋体', serif;
+            letter-spacing: 0.03em;
+        }
+
+        .detail-content p {
+            margin-bottom: 16px;
+        }
+
+        .detail-content ul, .detail-content ol {
+            margin: 16px 0;
+            padding-left: 32px;
+        }
+
+        .detail-content li {
+            margin-bottom: 8px;
+        }
+
+        .detail-content code {
+            background: var(--ghibli-warm);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .detail-content pre {
+            background: var(--ghibli-warm);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.fullscreen {
+            max-width: none;
+            width: calc(100vw - 480px);
+            max-height: 100vh;
+            height: 100vh;
+            border-radius: 0;
+            margin: 0;
+            padding: 20px 32px;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--ghibli-mint);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea.fullscreen-textarea {
+            min-height: calc(100vh - 180px);
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--ghibli-ocean);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--ghibli-warm);
+            border-radius: 12px;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 40px 10px 16px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--ghibli-ocean);
+        }
+
+        /* Sidebar Toolbars */
+        .sidebar-toolbar {
+            position: fixed;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: white;
+            box-shadow: 0 0 20px var(--shadow);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .sidebar-toolbar.active {
+            display: block;
+        }
+
+        .left-sidebar {
+            left: 0;
+        }
+
+        .right-sidebar {
+            right: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .sidebar-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--ghibli-mint);
+        }
+
+        .toolbar-section {
+            margin-bottom: 12px;
+            border: 1px solid var(--ghibli-mint);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .toolbar-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 12px;
+            background: linear-gradient(135deg, var(--ghibli-mint) 0%, var(--ghibli-sage) 100%);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .toolbar-label:hover {
+            background: linear-gradient(135deg, var(--ghibli-sage) 0%, var(--ghibli-mint) 100%);
+        }
+
+        .toolbar-label::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.3s;
+        }
+
+        .toolbar-label.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .toolbar-content {
+            padding: 12px;
+            background: white;
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .toolbar-content.collapsed {
+            max-height: 0;
+            padding: 0 12px;
+        }
+
+        .toolbar-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .toolbar-buttons-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tool-btn {
+            padding: 8px;
+            background: var(--ghibli-warm);
+            border: 1px solid var(--ghibli-sage);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+        }
+
+        .tool-btn:hover {
+            background: var(--ghibli-mint);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .tool-btn-large {
+            padding: 10px 12px;
+            background: var(--ghibli-peach);
+            border: 1px solid var(--ghibli-sage);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tool-btn-large:hover {
+            background: var(--ghibli-lavender);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        /* Adjust container margin when sidebars are active */
+        body.sidebars-active .container {
+            margin: 0 260px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1400px) {
+            body.sidebars-active .container {
+                margin: 0 auto;
+            }
+            
+            .sidebar-toolbar {
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .modal-content.fullscreen {
+                width: calc(100vw - 400px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-content.fullscreen {
+                width: 100vw;
+                padding: 20px;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .level-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .detail-title {
+                font-size: 24px;
+            }
+
+            .detail-content {
+                column-count: 1;
+            }
+
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .detail-meta-actions {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1 id="pageTitle">PaperReading</h1>
+                <div class="breadcrumb" id="breadcrumb"></div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                <button class="btn btn-secondary" onclick="importData()">📤 导入</button>
+            </div>
+        </div>
+
+        <div class="content" id="content"></div>
+    </div>
+
+    <!-- Add Paper Modal -->
+    <div class="modal" id="addPaperModal">
+        <div class="modal-content">
+            <div class="modal-header">添加论文笔记</div>
+            <form id="addPaperForm">
+                <div class="form-group" id="titleGroup">
+                    <label>论文标题 *</label>
+                    <input type="text" id="paperTitle" required>
+                </div>
+                <div class="form-group" id="authorsGroup">
+                    <label>作者 *</label>
+                    <input type="text" id="paperAuthors" required placeholder="多个作者用逗号分隔">
+                </div>
+                <div class="form-group" id="yearGroup">
+                    <label>年份 *</label>
+                    <input type="number" id="paperYear" required min="1900" max="2100">
+                </div>
+                <div class="form-group" id="urlGroup">
+                    <label>论文链接</label>
+                    <input type="url" id="paperUrl" placeholder="https://...">
+                </div>
+                <div class="form-group" id="summaryGroup">
+                    <label>一句话简介 *</label>
+                    <input type="text" id="paperSummary" required>
+                </div>
+                <div class="form-group" id="notesGroup">
+                    <textarea id="paperNotes" placeholder="使用 $...$ 包裹行内公式，使用 $$...$$ 包裹块级公式"></textarea>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">✓ 保存</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">✕ 取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" accept=".json" style="display: none;">
+    <!-- Left Sidebar Toolbar -->
+    <div class="sidebar-toolbar left-sidebar" id="leftSidebar">
+        <div class="sidebar-header">常用符号</div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">希腊字母 (小写)</div>
+            <div class="toolbar-content">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\alpha')">α</button>
+                    <button class="tool-btn" onclick="insertText('\\beta')">β</button>
+                    <button class="tool-btn" onclick="insertText('\\gamma')">γ</button>
+                    <button class="tool-btn" onclick="insertText('\\delta')">δ</button>
+                    <button class="tool-btn" onclick="insertText('\\epsilon')">ε</button>
+                    <button class="tool-btn" onclick="insertText('\\varepsilon')">ϵ</button>
+                    <button class="tool-btn" onclick="insertText('\\zeta')">ζ</button>
+                    <button class="tool-btn" onclick="insertText('\\eta')">η</button>
+                    <button class="tool-btn" onclick="insertText('\\theta')">θ</button>
+                    <button class="tool-btn" onclick="insertText('\\vartheta')">ϑ</button>
+                    <button class="tool-btn" onclick="insertText('\\iota')">ι</button>
+                    <button class="tool-btn" onclick="insertText('\\kappa')">κ</button>
+                    <button class="tool-btn" onclick="insertText('\\lambda')">λ</button>
+                    <button class="tool-btn" onclick="insertText('\\mu')">μ</button>
+                    <button class="tool-btn" onclick="insertText('\\nu')">ν</button>
+                    <button class="tool-btn" onclick="insertText('\\xi')">ξ</button>
+                    <button class="tool-btn" onclick="insertText('\\pi')">π</button>
+                    <button class="tool-btn" onclick="insertText('\\varpi')">ϖ</button>
+                    <button class="tool-btn" onclick="insertText('\\rho')">ρ</button>
+                    <button class="tool-btn" onclick="insertText('\\varrho')">ϱ</button>
+                    <button class="tool-btn" onclick="insertText('\\sigma')">σ</button>
+                    <button class="tool-btn" onclick="insertText('\\varsigma')">ς</button>
+                    <button class="tool-btn" onclick="insertText('\\tau')">τ</button>
+                    <button class="tool-btn" onclick="insertText('\\upsilon')">υ</button>
+                    <button class="tool-btn" onclick="insertText('\\phi')">φ</button>
+                    <button class="tool-btn" onclick="insertText('\\varphi')">ϕ</button>
+                    <button class="tool-btn" onclick="insertText('\\chi')">χ</button>
+                    <button class="tool-btn" onclick="insertText('\\psi')">ψ</button>
+                    <button class="tool-btn" onclick="insertText('\\omega')">ω</button>
+                    <button class="tool-btn" onclick="insertText('\\digamma')">ϝ</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">希腊字母 (大写)</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\Gamma')">Γ</button>
+                    <button class="tool-btn" onclick="insertText('\\Delta')">Δ</button>
+                    <button class="tool-btn" onclick="insertText('\\Theta')">Θ</button>
+                    <button class="tool-btn" onclick="insertText('\\Lambda')">Λ</button>
+                    <button class="tool-btn" onclick="insertText('\\Xi')">Ξ</button>
+                    <button class="tool-btn" onclick="insertText('\\Pi')">Π</button>
+                    <button class="tool-btn" onclick="insertText('\\Sigma')">Σ</button>
+                    <button class="tool-btn" onclick="insertText('\\Upsilon')">Υ</button>
+                    <button class="tool-btn" onclick="insertText('\\Phi')">Φ</button>
+                    <button class="tool-btn" onclick="insertText('\\Psi')">Ψ</button>
+                    <button class="tool-btn" onclick="insertText('\\Omega')">Ω</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">运算符</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\sum')">∑</button>
+                    <button class="tool-btn" onclick="insertText('\\prod')">∏</button>
+                    <button class="tool-btn" onclick="insertText('\\coprod')">∐</button>
+                    <button class="tool-btn" onclick="insertText('\\int')">∫</button>
+                    <button class="tool-btn" onclick="insertText('\\iint')">∬</button>
+                    <button class="tool-btn" onclick="insertText('\\iiint')">∭</button>
+                    <button class="tool-btn" onclick="insertText('\\oint')">∮</button>
+                    <button class="tool-btn" onclick="insertText('\\nabla')">∇</button>
+                    <button class="tool-btn" onclick="insertText('\\partial')">∂</button>
+                    <button class="tool-btn" onclick="insertText('\\infty')">∞</button>
+                    <button class="tool-btn" onclick="insertText('\\pm')">±</button>
+                    <button class="tool-btn" onclick="insertText('\\mp')">∓</button>
+                    <button class="tool-btn" onclick="insertText('\\times')">×</button>
+                    <button class="tool-btn" onclick="insertText('\\div')">÷</button>
+                    <button class="tool-btn" onclick="insertText('\\cdot')">·</button>
+                    <button class="tool-btn" onclick="insertText('\\ast')">∗</button>
+                    <button class="tool-btn" onclick="insertText('\\star')">⋆</button>
+                    <button class="tool-btn" onclick="insertText('\\circ')">∘</button>
+                    <button class="tool-btn" onclick="insertText('\\bullet')">•</button>
+                    <button class="tool-btn" onclick="insertText('\\oplus')">⊕</button>
+                    <button class="tool-btn" onclick="insertText('\\ominus')">⊖</button>
+                    <button class="tool-btn" onclick="insertText('\\otimes')">⊗</button>
+                    <button class="tool-btn" onclick="insertText('\\oslash')">⊘</button>
+                    <button class="tool-btn" onclick="insertText('\\odot')">⊙</button>
+                    <button class="tool-btn" onclick="insertText('\\bigcup')">⋃</button>
+                    <button class="tool-btn" onclick="insertText('\\bigcap')">⋂</button>
+                    <button class="tool-btn" onclick="insertText('\\biguplus')">⨄</button>
+                    <button class="tool-btn" onclick="insertText('\\bigsqcup')">⨆</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">关系符号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\leq')">≤</button>
+                    <button class="tool-btn" onclick="insertText('\\geq')">≥</button>
+                    <button class="tool-btn" onclick="insertText('\\ll')">≪</button>
+                    <button class="tool-btn" onclick="insertText('\\gg')">≫</button>
+                    <button class="tool-btn" onclick="insertText('\\neq')">≠</button>
+                    <button class="tool-btn" onclick="insertText('\\equiv')">≡</button>
+                    <button class="tool-btn" onclick="insertText('\\approx')">≈</button>
+                    <button class="tool-btn" onclick="insertText('\\sim')">∼</button>
+                    <button class="tool-btn" onclick="insertText('\\simeq')">≃</button>
+                    <button class="tool-btn" onclick="insertText('\\cong')">≅</button>
+                    <button class="tool-btn" onclick="insertText('\\propto')">∝</button>
+                    <button class="tool-btn" onclick="insertText('\\in')">∈</button>
+                    <button class="tool-btn" onclick="insertText('\\notin')">∉</button>
+                    <button class="tool-btn" onclick="insertText('\\ni')">∋</button>
+                    <button class="tool-btn" onclick="insertText('\\subset')">⊂</button>
+                    <button class="tool-btn" onclick="insertText('\\supset')">⊃</button>
+                    <button class="tool-btn" onclick="insertText('\\subseteq')">⊆</button>
+                    <button class="tool-btn" onclick="insertText('\\supseteq')">⊇</button>
+                    <button class="tool-btn" onclick="insertText('\\cap')">∩</button>
+                    <button class="tool-btn" onclick="insertText('\\cup')">∪</button>
+                    <button class="tool-btn" onclick="insertText('\\emptyset')">∅</button>
+                    <button class="tool-btn" onclick="insertText('\\varnothing')">⌀</button>
+                    <button class="tool-btn" onclick="insertText('\\perp')">⊥</button>
+                    <button class="tool-btn" onclick="insertText('\\parallel')">∥</button>
+                    <button class="tool-btn" onclick="insertText('\\nparallel')">∦</button>
+                    <button class="tool-btn" onclick="insertText('\\asymp')">≍</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">箭头符号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\rightarrow')">→</button>
+                    <button class="tool-btn" onclick="insertText('\\leftarrow')">←</button>
+                    <button class="tool-btn" onclick="insertText('\\leftrightarrow')">↔</button>
+                    <button class="tool-btn" onclick="insertText('\\Rightarrow')">⇒</button>
+                    <button class="tool-btn" onclick="insertText('\\Leftarrow')">⇐</button>
+                    <button class="tool-btn" onclick="insertText('\\Leftrightarrow')">⇔</button>
+                    <button class="tool-btn" onclick="insertText('\\uparrow')">↑</button>
+                    <button class="tool-btn" onclick="insertText('\\downarrow')">↓</button>
+                    <button class="tool-btn" onclick="insertText('\\updownarrow')">↕</button>
+                    <button class="tool-btn" onclick="insertText('\\Uparrow')">⇑</button>
+                    <button class="tool-btn" onclick="insertText('\\Downarrow')">⇓</button>
+                    <button class="tool-btn" onclick="insertText('\\Updownarrow')">⇕</button>
+                    <button class="tool-btn" onclick="insertText('\\mapsto')">↦</button>
+                    <button class="tool-btn" onclick="insertText('\\longrightarrow')">⟶</button>
+                    <button class="tool-btn" onclick="insertText('\\longleftarrow')">⟵</button>
+                    <button class="tool-btn" onclick="insertText('\\longleftrightarrow')">⟷</button>
+                    <button class="tool-btn" onclick="insertText('\\hookleftarrow')">↩</button>
+                    <button class="tool-btn" onclick="insertText('\\hookrightarrow')">↪</button>
+                    <button class="tool-btn" onclick="insertText('\\rightharpoonup')">⇀</button>
+                    <button class="tool-btn" onclick="insertText('\\leftharpoonup')">↼</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">数学字体</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{}')">黑板粗体 ℝ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathcal{}')">花体 𝓛</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{}')">粗体 𝐀</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathit{}')">斜体</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathrm{}')">罗马体</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathsf{}')">无衬线体</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathtt{}')">打字机体</button>
+                    <button class="tool-btn-large" onclick="insertText('\\boldsymbol{}')">粗体符号</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">其他符号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\forall')">∀</button>
+                    <button class="tool-btn" onclick="insertText('\\exists')">∃</button>
+                    <button class="tool-btn" onclick="insertText('\\nexists')">∄</button>
+                    <button class="tool-btn" onclick="insertText('\\neg')">¬</button>
+                    <button class="tool-btn" onclick="insertText('\\land')">∧</button>
+                    <button class="tool-btn" onclick="insertText('\\lor')">∨</button>
+                    <button class="tool-btn" onclick="insertText('\\top')">⊤</button>
+                    <button class="tool-btn" onclick="insertText('\\bot')">⊥</button>
+                    <button class="tool-btn" onclick="insertText('\\angle')">∠</button>
+                    <button class="tool-btn" onclick="insertText('\\triangle')">△</button>
+                    <button class="tool-btn" onclick="insertText('\\square')">□</button>
+                    <button class="tool-btn" onclick="insertText('\\diamond')">◇</button>
+                    <button class="tool-btn" onclick="insertText('\\perp')">⊥</button>
+                    <button class="tool-btn" onclick="insertText('\\parallel')">∥</button>
+                    <button class="tool-btn" onclick="insertText('\\ell')">ℓ</button>
+                    <button class="tool-btn" onclick="insertText('\\hbar')">ℏ</button>
+                    <button class="tool-btn" onclick="insertText('\\aleph')">ℵ</button>
+                    <button class="tool-btn" onclick="insertText('\\Im')">ℑ</button>
+                    <button class="tool-btn" onclick="insertText('\\Re')">ℜ</button>
+                    <button class="tool-btn" onclick="insertText('\\wp')">℘</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">逻辑符号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\land')">∧</button>
+                    <button class="tool-btn" onclick="insertText('\\lor')">∨</button>
+                    <button class="tool-btn" onclick="insertText('\\neg')">¬</button>
+                    <button class="tool-btn" onclick="insertText('\\implies')">⟹</button>
+                    <button class="tool-btn" onclick="insertText('\\iff')">⟺</button>
+                    <button class="tool-btn" onclick="insertText('\\forall')">∀</button>
+                    <button class="tool-btn" onclick="insertText('\\exists')">∃</button>
+                    <button class="tool-btn" onclick="insertText('\\nexists')">∄</button>
+                    <button class="tool-btn" onclick="insertText('\\therefore')">∴</button>
+                    <button class="tool-btn" onclick="insertText('\\because')">∵</button>
+                    <button class="tool-btn" onclick="insertText('\\vdash')">⊢</button>
+                    <button class="tool-btn" onclick="insertText('\\models')">⊨</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">点与省略号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\cdot')">·</button>
+                    <button class="tool-btn" onclick="insertText('\\cdots')">⋯</button>
+                    <button class="tool-btn" onclick="insertText('\\ldots')">…</button>
+                    <button class="tool-btn" onclick="insertText('\\vdots')">⋮</button>
+                    <button class="tool-btn" onclick="insertText('\\ddots')">⋱</button>
+                    <button class="tool-btn" onclick="insertText('\\dots')">…</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">特殊字母</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons">
+                    <button class="tool-btn" onclick="insertText('\\ell')">ℓ</button>
+                    <button class="tool-btn" onclick="insertText('\\hbar')">ℏ</button>
+                    <button class="tool-btn" onclick="insertText('\\imath')">ı</button>
+                    <button class="tool-btn" onclick="insertText('\\jmath')">ȷ</button>
+                    <button class="tool-btn" onclick="insertText('\\wp')">℘</button>
+                    <button class="tool-btn" onclick="insertText('\\aleph')">ℵ</button>
+                    <button class="tool-btn" onclick="insertText('\\beth')">ℶ</button>
+                    <button class="tool-btn" onclick="insertText('\\gimel')">ℷ</button>
+                    <button class="tool-btn" onclick="insertText('\\daleth')">ℸ</button>
+                    <button class="tool-btn" onclick="insertText('\\Im')">ℑ</button>
+                    <button class="tool-btn" onclick="insertText('\\Re')">ℜ</button>
+                    <button class="tool-btn" onclick="insertText('\\partial')">∂</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">空格与间距</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\quad')">空格 quad</button>
+                    <button class="tool-btn-large" onclick="insertText('\\qquad')">双空格 qquad</button>
+                    <button class="tool-btn-large" onclick="insertText('\\,')">小空格 \,</button>
+                    <button class="tool-btn-large" onclick="insertText('\\;')">中空格 \;</button>
+                    <button class="tool-btn-large" onclick="insertText('\\!')">负空格 \!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Sidebar Toolbar -->
+    <div class="sidebar-toolbar right-sidebar" id="rightSidebar">
+        <div class="sidebar-header">常用模板</div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">分数与根式</div>
+            <div class="toolbar-content">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\frac{}{}')">分数 \frac{}{}</button>
+                    <button class="tool-btn-large" onclick="insertText('\\dfrac{}{}')">大分数 \dfrac{}{}</button>
+                    <button class="tool-btn-large" onclick="insertText('\\tfrac{}{}')">小分数 \tfrac{}{}</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sqrt{}')">根号 \sqrt{}</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sqrt[]{}')">n次根 \sqrt[]{}</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">上下标</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('^{}')">上标 ^{}</button>
+                    <button class="tool-btn-large" onclick="insertText('_{}')">下标 _{}</button>
+                    <button class="tool-btn-large" onclick="insertText('^{}_{}')">上下标 ^{}_{}</button>
+                    <button class="tool-btn-large" onclick="insertText('\\overset{}{}')">上方标注</button>
+                    <button class="tool-btn-large" onclick="insertText('\\underset{}{}')">下方标注</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">积分与求和</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\int')">不定积分 ∫</button>
+                    <button class="tool-btn-large" onclick="insertText('\\int_{}^{}')">定积分</button>
+                    <button class="tool-btn-large" onclick="insertText('\\iint')">二重积分 ∬</button>
+                    <button class="tool-btn-large" onclick="insertText('\\iiint')">三重积分 ∭</button>
+                    <button class="tool-btn-large" onclick="insertText('\\oint')">环路积分 ∮</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sum_{i=1}^{n}')">求和 Σ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\prod_{i=1}^{n}')">连乘 ∏</button>
+                    <button class="tool-btn-large" onclick="insertText('\\lim_{x \\to \\infty}')">极限</button>
+                    <button class="tool-btn-large" onclick="insertText('\\lim_{x \\to a^+}')">右极限</button>
+                    <button class="tool-btn-large" onclick="insertText('\\lim_{x \\to a^-}')">左极限</button>
+                    <button class="tool-btn-large" onclick="insertText('\\limsup_{n \\to \\infty}')">上极限</button>
+                    <button class="tool-btn-large" onclick="insertText('\\liminf_{n \\to \\infty}')">下极限</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sup')">上确界 sup</button>
+                    <button class="tool-btn-large" onclick="insertText('\\inf')">下确界 inf</button>
+                    <button class="tool-btn-large" onclick="insertText('\\max')">最大值 max</button>
+                    <button class="tool-btn-large" onclick="insertText('\\min')">最小值 min</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">导数与微分</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\frac{d}{dx}')">导数 d/dx</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{d^2}{dx^2}')">二阶导数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{\\partial}{\\partial x}')">偏导 ∂/∂x</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{\\partial^2}{\\partial x^2}')">二阶偏导</button>
+                    <button class="tool-btn-large" onclick="insertText('\\nabla')">梯度 ∇</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathrm{d}x')">微分 dx</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">矩阵</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\begin{matrix} & \\\\ & \\end{matrix}')">无括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{pmatrix} & \\\\ & \\end{pmatrix}')">圆括号 ( )</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{bmatrix} & \\\\ & \\end{bmatrix}')">方括号 [ ]</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{Bmatrix} & \\\\ & \\end{Bmatrix}')">花括号 { }</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{vmatrix} & \\\\ & \\end{vmatrix}')">单竖线 | |</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{Vmatrix} & \\\\ & \\end{Vmatrix}')">双竖线 ‖ ‖</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">括号</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\left( \\right)')">自适应圆括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left[ \\right]')">自适应方括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left\\{ \\right\\}')">自适应花括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left| \\right|')">自适应绝对值</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left\\| \\right\\|')">自适应范数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left\\langle \\right\\rangle')">尖括号 ⟨⟩</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left\\lfloor \\right\\rfloor')">下取整 ⌊⌋</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left\\lceil \\right\\rceil')">上取整 ⌈⌉</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">多行公式</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('$$\n\n$$')">块级公式 $$...$$</button>
+                    <button class="tool-btn-large" onclick="insertText('$  $')">行内公式 $...$</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{align}\n & = \\\\\n & = \n\\end{align}')">对齐 align</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{aligned}\n & = \\\\\n & = \n\\end{aligned}')">对齐 aligned</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{cases}\n , & \\\\\n , & \n\\end{cases}')">分段函数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\begin{equation}\n\n\\end{equation}')">编号公式</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">标注与装饰</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\hat{}')">帽子 â</button>
+                    <button class="tool-btn-large" onclick="insertText('\\widehat{}')">宽帽子</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bar{}')">横线 ā</button>
+                    <button class="tool-btn-large" onclick="insertText('\\overline{}')">上划线</button>
+                    <button class="tool-btn-large" onclick="insertText('\\underline{}')">下划线</button>
+                    <button class="tool-btn-large" onclick="insertText('\\tilde{}')">波浪 ã</button>
+                    <button class="tool-btn-large" onclick="insertText('\\widetilde{}')">宽波浪</button>
+                    <button class="tool-btn-large" onclick="insertText('\\vec{}')">向量箭头 →</button>
+                    <button class="tool-btn-large" onclick="insertText('\\dot{}')">单点 ȧ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\ddot{}')">双点 ä</button>
+                    <button class="tool-btn-large" onclick="insertText('\\overbrace{}^{}')">上括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\underbrace{}_{}')">下括号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\cancel{}')">删除线</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bcancel{}')">反删除线</button>
+                    <button class="tool-btn-large" onclick="insertText('\\xcancel{}')">交叉删除</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">常用数集</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{R}')">实数集 ℝ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{C}')">复数集 ℂ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{Z}')">整数集 ℤ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{Q}')">有理数集 ℚ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{N}')">自然数集 ℕ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{P}')">素数集 ℙ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{H}')">四元数 ℍ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{F}')">域 𝔽</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">概率统计</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{E}[]')">期望 𝔼</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbb{P}()') ">概率 ℙ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathrm{Var}[]')">方差 Var</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathrm{Cov}(,)')">协方差 Cov</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sim')">服从分布 ∼</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathcal{N}(,)')">正态分布 𝒩</button>
+                    <button class="tool-btn-large" onclick="insertText('P(|)')">条件概率</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">三角函数</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\sin')">sin</button>
+                    <button class="tool-btn-large" onclick="insertText('\\cos')">cos</button>
+                    <button class="tool-btn-large" onclick="insertText('\\tan')">tan</button>
+                    <button class="tool-btn-large" onclick="insertText('\\cot')">cot</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sec')">sec</button>
+                    <button class="tool-btn-large" onclick="insertText('\\csc')">csc</button>
+                    <button class="tool-btn-large" onclick="insertText('\\arcsin')">arcsin</button>
+                    <button class="tool-btn-large" onclick="insertText('\\arccos')">arccos</button>
+                    <button class="tool-btn-large" onclick="insertText('\\arctan')">arctan</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sinh')">sinh</button>
+                    <button class="tool-btn-large" onclick="insertText('\\cosh')">cosh</button>
+                    <button class="tool-btn-large" onclick="insertText('\\tanh')">tanh</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">机器学习</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\mathcal{L}')">损失函数 𝓛</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathcal{D}')">数据集 𝓓</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathcal{H}')">假设空间 𝓗</button>
+                    <button class="tool-btn-large" onclick="insertText('\\theta')">参数 θ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\nabla_{\\theta}')">梯度 ∇θ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\argmax_{}')">argmax</button>
+                    <button class="tool-btn-large" onclick="insertText('\\argmin_{}')">argmin</button>
+                    <button class="tool-btn-large" onclick="insertText('\\hat{y}')">预测值 ŷ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{x}')">向量 𝐱</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{W}')">矩阵 𝐖</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">Markdown格式</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('## ')">二级标题</button>
+                    <button class="tool-btn-large" onclick="insertText('### ')">三级标题</button>
+                    <button class="tool-btn-large" onclick="insertText('**  **')">粗体</button>
+                    <button class="tool-btn-large" onclick="insertText('*  *')">斜体</button>
+                    <button class="tool-btn-large" onclick="insertText('`  `')">行内代码</button>
+                    <button class="tool-btn-large" onclick="insertText('```\n\n```')">代码块</button>
+                    <button class="tool-btn-large" onclick="insertText('- ')">无序列表</button>
+                    <button class="tool-btn-large" onclick="insertText('1. ')">有序列表</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">深度学习</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\text{softmax}(\\mathbf{z})')">softmax</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{ReLU}(x) = \\max(0, x)')">ReLU</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sigma(x) = \\frac{1}{1+e^{-x}}')">sigmoid</button>
+                    <button class="tool-btn-large" onclick="insertText('\\tanh(x)')">tanh</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{Attention}(Q,K,V)')">Attention</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{h}_t = \\text{LSTM}(\\mathbf{x}_t, \\mathbf{h}_{t-1})')">LSTM</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{W} \\mathbf{x} + \\mathbf{b}')">线性层</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{BatchNorm}(\\mathbf{x})')">BatchNorm</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">优化算法</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\theta_{t+1} = \\theta_t - \\eta \\nabla_{\\theta} \\mathcal{L}')">SGD</button>
+                    <button class="tool-btn-large" onclick="insertText('m_t = \\beta_1 m_{t-1} + (1-\\beta_1) g_t')">动量项</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{Adam: } \\theta_t = \\theta_{t-1} - \\alpha \\frac{\\hat{m}_t}{\\sqrt{\\hat{v}_t} + \\epsilon}')">Adam</button>
+                    <button class="tool-btn-large" onclick="insertText('\\eta_t = \\eta_0 \\cdot \\frac{1}{\\sqrt{t}}')">学习率衰减</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">常见损失函数</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\text{MSE} = \\frac{1}{n} \\sum_{i=1}^n (y_i - \\hat{y}_i)^2')">MSE</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{CrossEntropy} = -\\sum_{i} y_i \\log(\\hat{y}_i)')">交叉熵</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{KL}(P||Q) = \\sum_i P(i) \\log \\frac{P(i)}{Q(i)}')">KL散度</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{Hinge} = \\max(0, 1 - y \\cdot \\hat{y})')">Hinge Loss</button>
+                    <button class="tool-btn-large" onclick="insertText('||\\mathbf{x} - \\mathbf{y}||_2^2')">L2 Loss</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">信息论</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('H(X) = -\\sum_{x} p(x) \\log p(x)')">熵 Entropy</button>
+                    <button class="tool-btn-large" onclick="insertText('I(X;Y) = H(X) - H(X|Y)')">互信息</button>
+                    <button class="tool-btn-large" onclick="insertText('H(X|Y)')">条件熵</button>
+                    <button class="tool-btn-large" onclick="insertText('D_{KL}(P||Q)')">KL散度</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">线性代数</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{A}^T')">转置 Aᵀ</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{A}^{-1}')">逆矩阵 A⁻¹</button>
+                    <button class="tool-btn-large" onclick="insertText('\\det(\\mathbf{A})')">行列式 det</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{tr}(\\mathbf{A})')">迹 trace</button>
+                    <button class="tool-btn-large" onclick="insertText('\\text{rank}(\\mathbf{A})')">秩 rank</button>
+                    <button class="tool-btn-large" onclick="insertText('||\\mathbf{x}||_2')">2-范数</button>
+                    <button class="tool-btn-large" onclick="insertText('||\\mathbf{x}||_1')">1-范数</button>
+                    <button class="tool-btn-large" onclick="insertText('||\\mathbf{x}||_\\infty')">∞-范数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\langle \\mathbf{x}, \\mathbf{y} \\rangle')">内积</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{x} \\otimes \\mathbf{y}')">外积/张量积</button>
+                    <button class="tool-btn-large" onclick="insertText('\\mathbf{A} \\odot \\mathbf{B}')">Hadamard积</button>
+                    <button class="tool-btn-large" onclick="insertText('\\lambda_i, \\mathbf{v}_i')">特征值/向量</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">微积分定理</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\frac{d}{dx}[f(x)g(x)] = f\'(x)g(x) + f(x)g\'(x)')">乘积法则</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{d}{dx}\\left[\\frac{f(x)}{g(x)}\\right] = \\frac{f\'(x)g(x) - f(x)g\'(x)}{g(x)^2}')">商法则</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{df(g(x))}{dx} = f\'(g(x)) \\cdot g\'(x)')">链式法则</button>
+                    <button class="tool-btn-large" onclick="insertText('\\int_a^b f(x)dx = F(b) - F(a)')">微积分基本定理</button>
+                    <button class="tool-btn-large" onclick="insertText('\\int u dv = uv - \\int v du')">分部积分</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">常用不等式</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('|x + y| \\leq |x| + |y|')">三角不等式</button>
+                    <button class="tool-btn-large" onclick="insertText('\\frac{x+y}{2} \\geq \\sqrt{xy}')">算术-几何平均</button>
+                    <button class="tool-btn-large" onclick="insertText('|xy| \\leq \\frac{x^2 + y^2}{2}')">柯西不等式形式</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left|\\sum x_i y_i\\right| \\leq \\sqrt{\\sum x_i^2} \\sqrt{\\sum y_i^2}')">柯西-施瓦茨</button>
+                    <button class="tool-btn-large" onclick="insertText('e^x \\geq 1 + x')">指数不等式</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">复杂公式模板</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('f(x) = \\begin{cases} a, & x < 0 \\\\ b, & x \\geq 0 \\end{cases}')">分段函数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\sum_{i=1}^{n} \\sum_{j=1}^{m}')">双重求和</button>
+                    <button class="tool-btn-large" onclick="insertText('\\prod_{i=1}^{n}')">连乘符号</button>
+                    <button class="tool-btn-large" onclick="insertText('\\binom{n}{k} = \\frac{n!}{k!(n-k)!}')">二项式系数</button>
+                    <button class="tool-btn-large" onclick="insertText('\\left. \\frac{df}{dx} \\right|_{x=a}')">导数在某点值</button>
+                    <button class="tool-btn-large" onclick="insertText('\\xrightarrow[下]{上}')">带标注箭头</button>
+                    <button class="tool-btn-large" onclick="insertText('\\xleftarrow[下]{上}')">带标注左箭头</button>
+                    <button class="tool-btn-large" onclick="insertText('\\stackrel{上}{=}')">等号上标注</button>
+                </div>
+            </div>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-label" onclick="toggleSection(this)">颜色与高亮</div>
+            <div class="toolbar-content collapsed">
+                <div class="toolbar-buttons-vertical">
+                    <button class="tool-btn-large" onclick="insertText('\\textcolor{red}{  }')">红色文本</button>
+                    <button class="tool-btn-large" onclick="insertText('\\textcolor{blue}{  }')">蓝色文本</button>
+                    <button class="tool-btn-large" onclick="insertText('\\textcolor{green}{  }')">绿色文本</button>
+                    <button class="tool-btn-large" onclick="insertText('\\textcolor{orange}{  }')">橙色文本</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[yellow]{  }')">黄色背景</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[lightblue]{  }')">浅蓝背景</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[pink]{  }')">粉色背景</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[lightgreen]{  }')">浅绿背景</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[yellow,5px]{  }')">黄色背景+边距</button>
+                    <button class="tool-btn-large" onclick="insertText('\\bbox[yellow,5px,border:2px solid red]{  }')">彩色边框</button>
+                    <button class="tool-btn-large" onclick="insertText('\\boxed{  }')">方框</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure
+        const structure = {
+            "一：基础理论与方法": {
+                "1. 机器学习基础": ["1.1 监督学习", "1.2 无监督学习", "1.3 半监督学习", "1.4 自监督学习", "1.5 强化学习基础", "1.6 在线学习与主动学习", "1.7 集成学习"],
+                "2. 深度学习核心": ["2.1 优化算法", "2.2 正则化技术", "2.3 归一化方法", "2.4 激活函数与损失函数", "2.5 学习率调度", "2.6 数据增强策略"],
+                "3. 神经网络架构": ["3.1 前馈神经网络", "3.2 卷积神经网络 (CNN)", "3.3 循环神经网络 (RNN/LSTM/GRU)", "3.4 Transformer架构", "3.5 图神经网络 (GNN)", "3.6 注意力机制", "3.7 神经架构搜索 (NAS)"],
+                "4. 生成模型": ["4.1 生成对抗网络 (GAN)", "4.2 变分自编码器 (VAE)", "4.3 扩散模型", "4.4 自回归模型", "4.5 流模型", "4.6 基于能量的模型"]
+            },
+            "二：核心应用领域": {
+                "5. 计算机视觉": ["5.1 图像分类与识别", "5.2 目标检测", "5.3 图像分割", "5.4 目标跟踪", "5.5 姿态估计", "5.6 三维视觉与场景重建", "5.7 视频理解", "5.8 图像生成与编辑", "5.9 光流估计", "5.10 图像增强"],
+                "6. 自然语言处理": ["6.1 词嵌入与表示学习", "6.2 预训练语言模型", "6.3 大语言模型 (LLM)", "6.4 机器翻译", "6.5 文本生成", "6.6 问答系统", "6.7 对话系统", "6.8 信息抽取", "6.9 文本摘要", "6.10 情感分析与文本分类", "6.11 自然语言理解与推理", "6.12 提示工程"],
+                "7. 多模态学习": ["7.1 视觉-语言预训练", "7.2 图像描述生成", "7.3 视觉问答 (VQA)", "7.4 文本到图像生成", "7.5 视频-语言理解", "7.6 音频-视觉学习", "7.7 多模态大模型"],
+                "8. 语音与音频": ["8.1 语音识别 (ASR)", "8.2 语音合成 (TTS)", "8.3 语音转换", "8.4 语音增强", "8.5 说话人识别", "8.6 语音情感识别", "8.7 音乐生成与理解"],
+                "9. 强化学习": ["9.1 值函数方法", "9.2 策略梯度方法", "9.3 Actor-Critic方法", "9.4 模型预测控制", "9.5 多智能体强化学习", "9.6 逆强化学习与模仿学习", "9.7 离线强化学习", "9.8 层次强化学习", "9.9 游戏AI应用"]
+            },
+            "三：专业应用场景": {
+                "10. 医疗AI": ["10.1 医学图像分析", "10.2 病理图像分析", "10.3 医学影像分割", "10.4 药物发现", "10.5 临床预测模型", "10.6 基因组学"],
+                "11. 自动驾驶": ["11.1 感知系统", "11.2 多传感器融合", "11.3 端到端驾驶", "11.4 运动预测", "11.5 路径规划", "11.6 场景理解"],
+                "12. 机器人学习": ["12.1 机器人操作", "12.2 模仿学习", "12.3 机器人导航", "12.4 机器人视觉", "12.5 多机器人协作"],
+                "13. 推荐系统": ["13.1 协同过滤", "13.2 深度推荐模型", "13.3 序列推荐", "13.4 知识图谱推荐", "13.5 多任务推荐"],
+                "14. 时间序列分析": ["14.1 时间序列预测", "14.2 异常检测", "14.3 时序分类"],
+                "15. 科学AI": ["15.1 蛋白质结构预测", "15.2 材料科学", "15.3 气候预测", "15.4 数学定理证明", "15.5 分子设计"]
+            },
+            "四：前沿研究主题": {
+                "16. 迁移学习与适应": ["16.1 迁移学习基础", "16.2 域适应", "16.3 域泛化", "16.4 测试时适应", "16.5 参数高效微调"],
+                "17. 少样本与零样本学习": ["17.1 少样本学习", "17.2 零样本学习", "17.3 元学习"],
+                "18. 持续学习": ["18.1 灾难性遗忘", "18.2 增量学习", "18.3 终身学习"],
+                "19. 知识表示与推理": ["19.1 知识图谱", "19.2 知识图谱补全", "19.3 常识推理", "19.4 神经符号系统", "19.5 逻辑推理"],
+                "20. 因果推断": ["20.1 因果发现", "20.2 反事实推理", "20.3 因果表示学习"],
+                "21. 世界模型": ["21.1 环境建模", "21.2 视频预测", "21.3 物理模拟"],
+                "22. AI Agent": ["22.1 语言Agent", "22.2 多Agent系统", "22.3 具身Agent", "22.4 工具使用"],
+                "23. 基础模型": ["23.1 视觉基础模型", "23.2 语言基础模型", "23.3 多模态基础模型", "23.4 基础模型评估"]
+            },
+            "五：AI安全与优化": {
+                "24. 模型压缩与加速": ["24.1 网络剪枝", "24.2 量化", "24.3 知识蒸馏", "24.4 轻量级网络设计", "24.5 神经网络加速器"],
+                "25. 对抗样本与鲁棒性": ["25.1 对抗攻击", "25.2 对抗防御", "25.3 鲁棒性分析", "25.4 认证防御"],
+                "26. 可解释性与可视化": ["26.1 特征可视化", "26.2 显著性图与注意力分析", "26.3 模型解释", "26.4 因果解释"],
+                "27. AI安全与对齐": ["27.1 AI安全基础", "27.2 价值对齐", "27.3 人类反馈强化学习", "27.4 红队测试", "27.5 安全评估"],
+                "28. AI伦理与公平性": ["28.1 算法公平性", "28.2 偏见检测与缓解", "28.3 AI伦理框架", "28.4 可问责性与透明度"],
+                "29. 隐私保护": ["29.1 联邦学习", "29.2 差分隐私", "29.3 安全多方计算", "29.4 同态加密"]
+            },
+            "六：系统与工程": {
+                "30. AI系统与基础设施": ["30.1 分布式训练", "30.2 模型并行", "30.3 混合精度训练", "30.4 梯度累积与检查点"],
+                "31. AutoML": ["31.1 神经架构搜索", "31.2 超参数优化", "31.3 自动特征工程", "31.4 AutoML系统"],
+                "32. MLOps与部署": ["32.1 模型部署", "32.2 模型监控", "32.3 A/B测试", "32.4 持续集成/持续部署"],
+                "33. 边缘AI": ["33.1 边缘计算优化", "33.2 片上学习", "33.3 移动端部署"]
+            },
+            "七：交叉与新兴领域": {
+                "34. 具身AI": ["34.1 视觉导航", "34.2 具身问答", "34.3 交互式学习"],
+                "35. 社交AI": ["35.1 情感计算", "35.2 社交机器人", "35.3 人机交互"],
+                "36. 创意AI": ["36.1 艺术生成", "36.2 音乐生成", "36.3 视频生成", "36.4 3D内容生成"],
+                "37. 神经科学启发的AI": ["37.1 脉冲神经网络", "37.2 记忆网络", "37.3 认知架构"],
+                "38. 量子机器学习": ["38.1 量子神经网络", "38.2 量子算法", "38.3 量子-经典混合系统"]
+            }
+        };
+
+        // State management
+        let currentLevel = [];
+        let papers = {};
+        let currentSubcategory = null;
+
+        // Initialize
+        // Initialize
+        async function init() {
+            try {
+                if (window.storage) {
+                    const stored = await window.storage.get('papers');
+                    if (stored && stored.value) {
+                        papers = JSON.parse(stored.value);
+                    }
+                } else {
+                    const stored = localStorage.getItem('papers');
+                    if (stored) {
+                        papers = JSON.parse(stored);
+                    }
+                }
+            } catch (error) {
+                console.log('No stored data or error loading:', error);
+                papers = {};
+            }
+            renderLevel1();
+        }
+
+        // Save papers
+        async function savePapers() {
+            try {
+                if (window.storage) {
+                    const result = await window.storage.set('papers', JSON.stringify(papers));
+                    if (result) {
+                        return true;
+                    } else {
+                        alert('保存失败，请稍后重试');
+                        return false;
+                    }
+                } else {
+                    localStorage.setItem('papers', JSON.stringify(papers));
+                    return true;
+                }
+            } catch (error) {
+                console.error('Error saving papers:', error);
+                alert('保存失败：' + error.message);
+                return false;
+            }
+        }
+
+        // Render Level 1 (Parts)
+        function renderLevel1() {
+            currentLevel = [];
+            updateBreadcrumb();
+            
+            // 恢复 header 按钮为导出/导入
+            const headerButtonGroup = document.querySelector('.header .btn-group');
+            headerButtonGroup.innerHTML = `
+                <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                <button class="btn btn-secondary" onclick="importData()">📤 导入</button>
+            `;
+            
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="level-grid">
+                    ${Object.keys(structure).map(part => {
+                        const count = Object.keys(structure[part]).reduce((sum, chapter) => 
+                            sum + structure[part][chapter].length, 0);
+                        return `
+                            <div class="level-card" onclick="renderLevel2('${part}')">
+                                <h3>${part}</h3>
+                                <div class="count">${count} 个子类别</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        // Render Level 2 (Chapters and Subcategories)
+        function renderLevel2(part) {
+            currentLevel = [part];
+            updateBreadcrumb();
+            
+            // 恢复 header 按钮为导出/导入
+            const headerButtonGroup = document.querySelector('.header .btn-group');
+            headerButtonGroup.innerHTML = `
+                <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                <button class="btn btn-secondary" onclick="importData()">📤 导入</button>
+            `;
+            
+            const chapters = structure[part];
+            const content = document.getElementById('content');
+            
+            let html = '<div class="level-grid">';
+            for (const [chapter, subcategories] of Object.entries(chapters)) {
+                for (const subcategory of subcategories) {
+                    const paperCount = papers[subcategory] ? papers[subcategory].length : 0;
+                    html += `
+                        <div class="level-card" onclick="renderPaperList('${part}', '${chapter}', '${subcategory}')">
+                            <h3>${subcategory}</h3>
+                            <div class="count">${paperCount} 篇论文</div>
+                        </div>
+                    `;
+                }
+            }
+            html += '</div>';
+            
+            content.innerHTML = html;
+        }
+
+        // Render Paper List
+        function renderPaperList(part, chapter, subcategory) {
+            currentLevel = [part, chapter, subcategory];
+            currentSubcategory = subcategory;
+            updateBreadcrumb();
+            
+            // 恢复 header 按钮为导出/导入
+            const headerButtonGroup = document.querySelector('.header .btn-group');
+            headerButtonGroup.innerHTML = `
+                <button class="btn btn-secondary" onclick="exportData()">📥 导出</button>
+                <button class="btn btn-secondary" onclick="importData()">📤 导入</button>
+            `;
+            
+            const paperList = papers[subcategory] || [];
+            const content = document.getElementById('content');
+            
+            let html = `
+                <div class="action-bar">
+                    <div class="search-box">
+                        <input type="text" placeholder="搜索论文..." id="searchInput" oninput="filterPapers()">
+                    </div>
+                    <button class="btn btn-primary" onclick="openAddPaperModal()">+ 添加论文</button>
+                </div>
+            `;
+            
+            if (paperList.length === 0) {
+                html += `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <div class="empty-state-text">还没有添加论文笔记</div>
+                        <div class="empty-state-subtext">点击上方按钮开始添加您的第一篇论文笔记</div>
+                    </div>
+                `;
+            } else {
+                html += '<div id="paperListContainer">';
+                paperList.forEach((paper, index) => {
+                    html += `
+                        <div class="paper-item" data-title="${paper.title.toLowerCase()}" data-authors="${paper.authors.toLowerCase()}">
+                            <div class="paper-header" onclick="renderPaperDetail(${index})">
+                                <div class="paper-number">${index + 1}</div>
+                                <div class="paper-info">
+                                    <div class="paper-title">${paper.title}</div>
+                                    <div class="paper-meta">${paper.authors} • ${paper.year}</div>
+                                </div>
+                            </div>
+                            <div class="paper-summary" onclick="renderPaperDetail(${index})">
+                                ${paper.summary}
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            content.innerHTML = html;
+        }
+
+        // Filter papers
+        function filterPapers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const paperItems = document.querySelectorAll('.paper-item');
+            
+            paperItems.forEach(item => {
+                const title = item.getAttribute('data-title');
+                const authors = item.getAttribute('data-authors');
+                
+                if (title.includes(searchTerm) || authors.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Render Paper Detail
+        function renderPaperDetail(index) {
+            const paper = papers[currentSubcategory][index];
+            updateBreadcrumb(paper.title);
+            
+            // 先更新 header 中的按钮区域
+            const headerButtonGroup = document.querySelector('.header .btn-group');
+            headerButtonGroup.innerHTML = `
+                <div class="detail-meta-item">
+                    <span>👥</span> ${paper.authors}
+                </div>
+                <div class="detail-meta-item">
+                    <span>📅</span> ${paper.year}
+                </div>
+                ${paper.url ? `<a href="${paper.url}" target="_blank" class="link-button">🔗 原文链接</a>` : ''}
+                <button class="btn btn-secondary" onclick="openEditMetadataModal(${index})">📝 编辑信息</button>
+                <button class="btn btn-secondary" onclick="openEditNotesModal(${index})">✏️ 编辑笔记</button>
+                <button class="btn btn-danger" onclick="deletePaper(${index})">🗑️ 删除</button>
+            `;
+
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="paper-detail">
+                    <div class="detail-content" id="noteContent">
+                        ${parseMarkdown(paper.notes || '暂无笔记内容')}
+                    </div>
+                </div>
+            `;
+            
+            // Render MathJax
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                setTimeout(() => {
+                    MathJax.typesetPromise([document.getElementById('noteContent')]).catch((err) => console.log('MathJax error:', err));
+                }, 100);
+            }
+        }
+
+        // Simple Markdown parser
+        function parseMarkdown(text) {
+            if (!text) return '';
+            
+            // 保护公式：先替换为占位符
+            const mathBlocks = [];
+            const mathInlines = [];
+            
+            // 保护块级公式 $$...$$
+            text = text.replace(/\$\$([\s\S]*?)\$\$/g, (match, formula) => {
+                mathBlocks.push(match);
+                return `__MATH_BLOCK_${mathBlocks.length - 1}__`;
+            });
+            
+            // 保护行内公式 $...$
+            text = text.replace(/\$([^\$\n]+?)\$/g, (match, formula) => {
+                mathInlines.push(match);
+                return `__MATH_INLINE_${mathInlines.length - 1}__`;
+            });
+            
+            // Headers
+            text = text.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+            text = text.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+            
+            // Code blocks (在 bold/italic 之前处理)
+            text = text.replace(/```(.*?)```/gs, '<pre><code>$1</code></pre>');
+            
+            // Inline code (在 bold/italic 之前处理)
+            text = text.replace(/`(.*?)`/g, '<code>$1</code>');
+            
+            // Bold
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // Italic
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Lists
+            text = text.replace(/^\- (.*$)/gim, '<li>$1</li>');
+            text = text.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+            
+            // Paragraphs
+            text = text.split('\n\n').map(para => {
+                if (!para.startsWith('<') && !para.startsWith('__MATH_') && para.trim()) {
+                    return '<p>' + para + '</p>';
+                }
+                return para;
+            }).join('\n');
+            
+            // 恢复公式
+            mathBlocks.forEach((math, index) => {
+                text = text.replace(`__MATH_BLOCK_${index}__`, math);
+            });
+            
+            mathInlines.forEach((math, index) => {
+                text = text.replace(`__MATH_INLINE_${index}__`, math);
+            });
+            
+            return text;
+        }
+
+        // Delete paper
+        function deletePaper(index) {
+            if (confirm('确定要删除这篇论文笔记吗？')) {
+                papers[currentSubcategory].splice(index, 1);
+                savePapers();
+                currentLevel.pop();
+                renderPaperList(currentLevel[0], currentLevel[1], currentSubcategory);
+            }
+        }
+
+        // Update breadcrumb
+        function updateBreadcrumb(paperTitle = null) {
+            const breadcrumb = document.getElementById('breadcrumb');
+            
+            if (currentLevel.length === 0) {
+                breadcrumb.innerHTML = '';
+                document.getElementById('pageTitle').textContent = 'PaperReading';
+                return;
+            }
+            
+            let html = '<span class="breadcrumb-item" onclick="renderLevel1()">首页</span>';
+            
+            currentLevel.forEach((level, index) => {
+                html += '<span class="breadcrumb-separator">›</span>';
+                if (index === 0) {
+                    html += `<span class="breadcrumb-item" onclick="renderLevel2('${level}')">${level}</span>`;
+                } else if (index === 1) {
+                    html += `<span class="breadcrumb-item" onclick="renderLevel2('${currentLevel[0]}')">${level}</span>`;
+                } else if (index === 2) {
+                    html += `<span class="breadcrumb-item" onclick="renderPaperList('${currentLevel[0]}', '${currentLevel[1]}', '${currentLevel[2]}')">${level}</span>`;
+                } else {
+                    html += `<span class="breadcrumb-item">${level}</span>`;
+                }
+            });
+            
+            breadcrumb.innerHTML = html;
+            document.getElementById('pageTitle').textContent = paperTitle || currentLevel[currentLevel.length - 1];
+        }
+
+        // Modal functions
+        function openAddPaperModal() {
+            document.getElementById('addPaperModal').classList.add('active');
+            document.getElementById('addPaperForm').reset();
+            showSidebars();
+        }
+
+        function openEditMetadataModal(index) {
+            const paper = papers[currentSubcategory][index];
+            document.getElementById('addPaperModal').classList.add('active');
+            document.getElementById('paperTitle').value = paper.title;
+            document.getElementById('paperAuthors').value = paper.authors;
+            document.getElementById('paperYear').value = paper.year;
+            document.getElementById('paperUrl').value = paper.url || '';
+            document.getElementById('paperSummary').value = paper.summary;
+            document.getElementById('paperNotes').value = paper.notes || '';
+            
+            // 隐藏笔记字段
+            document.getElementById('notesGroup').style.display = 'none';
+            
+            // 设置编辑模式
+            document.getElementById('addPaperForm').dataset.editIndex = index;
+            document.getElementById('addPaperForm').dataset.editType = 'metadata';
+            document.querySelector('.modal-header').textContent = '编辑论文信息';
+        }
+
+        // Insert text at cursor position in textarea
+        function insertText(text) {
+            const textarea = document.getElementById('paperNotes');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const currentValue = textarea.value;
+            
+            textarea.value = currentValue.substring(0, start) + text + currentValue.substring(end);
+            
+            // Set cursor position
+            const newPos = start + text.length;
+            textarea.setSelectionRange(newPos, newPos);
+            textarea.focus();
+        }
+
+        // Toggle section collapse
+        function toggleSection(label) {
+            const content = label.nextElementSibling;
+            const isCollapsed = content.classList.contains('collapsed');
+            
+            if (isCollapsed) {
+                content.classList.remove('collapsed');
+                label.classList.remove('collapsed');
+            } else {
+                content.classList.add('collapsed');
+                label.classList.add('collapsed');
+            }
+        }
+
+        // Show/hide sidebars
+        function showSidebars() {
+            document.getElementById('leftSidebar').classList.add('active');
+            document.getElementById('rightSidebar').classList.add('active');
+            document.body.classList.add('sidebars-active');
+        }
+
+        function hideSidebars() {
+            document.getElementById('leftSidebar').classList.remove('active');
+            document.getElementById('rightSidebar').classList.remove('active');
+            document.body.classList.remove('sidebars-active');
+        }
+
+        function openEditNotesModal(index) {
+            const paper = papers[currentSubcategory][index];
+            document.getElementById('addPaperModal').classList.add('active');
+            document.getElementById('paperTitle').value = paper.title;
+            document.getElementById('paperAuthors').value = paper.authors;
+            document.getElementById('paperYear').value = paper.year;
+            document.getElementById('paperUrl').value = paper.url || '';
+            document.getElementById('paperSummary').value = paper.summary;
+            document.getElementById('paperNotes').value = paper.notes || '';
+            
+            // 隐藏元数据字段
+            document.getElementById('titleGroup').style.display = 'none';
+            document.getElementById('authorsGroup').style.display = 'none';
+            document.getElementById('yearGroup').style.display = 'none';
+            document.getElementById('urlGroup').style.display = 'none';
+            document.getElementById('summaryGroup').style.display = 'none';
+            
+            // 设置编辑模式
+            document.getElementById('addPaperForm').dataset.editIndex = index;
+            document.getElementById('addPaperForm').dataset.editType = 'notes';
+            document.querySelector('.modal-header').style.display = 'none';
+
+            // 添加全屏样式
+            document.querySelector('.modal-content').classList.add('fullscreen');
+            document.getElementById('paperNotes').classList.add('fullscreen-textarea');
+
+            showSidebars();
+        }
+
+        function closeModal() {
+            document.getElementById('addPaperModal').classList.remove('active');
+            document.getElementById('addPaperForm').reset();
+            // 移除全屏样式
+            document.querySelector('.modal-content').classList.remove('fullscreen');
+            document.getElementById('paperNotes').classList.remove('fullscreen-textarea');
+
+            delete document.getElementById('addPaperForm').dataset.editIndex;
+            delete document.getElementById('addPaperForm').dataset.editType;
+            
+            // 恢复所有字段的显示
+            document.getElementById('titleGroup').style.display = 'block';
+            document.getElementById('authorsGroup').style.display = 'block';
+            document.getElementById('yearGroup').style.display = 'block';
+            document.getElementById('urlGroup').style.display = 'block';
+            document.getElementById('summaryGroup').style.display = 'block';
+            document.getElementById('notesGroup').style.display = 'block';
+            
+            document.querySelector('.modal-header').textContent = '添加论文笔记';
+            document.querySelector('.modal-header').style.display = 'block';
+
+            hideSidebars();
+        }
+
+        // Add paper
+        document.getElementById('addPaperForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const paper = {
+                title: document.getElementById('paperTitle').value,
+                authors: document.getElementById('paperAuthors').value,
+                year: parseInt(document.getElementById('paperYear').value),
+                url: document.getElementById('paperUrl').value,
+                summary: document.getElementById('paperSummary').value,
+                notes: document.getElementById('paperNotes').value
+            };
+            
+            const editIndex = this.dataset.editIndex;
+            
+            if (editIndex !== undefined) {
+                // 编辑模式
+                const oldPaper = {...papers[currentSubcategory][editIndex]};
+                papers[currentSubcategory][editIndex] = paper;
+                const saved = await savePapers();
+                
+                if (saved !== false) {
+                    closeModal();
+                    renderPaperDetail(editIndex);
+                } else {
+                    papers[currentSubcategory][editIndex] = oldPaper; // 回滚
+                }
+            } else {
+                // 新增模式
+                if (!papers[currentSubcategory]) {
+                    papers[currentSubcategory] = [];
+                }
+                
+                papers[currentSubcategory].push(paper);
+                const saved = await savePapers();
+
+                if (saved !== false) {
+                    closeModal();
+                    renderPaperList(currentLevel[0], currentLevel[1], currentSubcategory);
+                } else {
+                    papers[currentSubcategory].pop(); // 回滚
+                }
+            }
+        });
+
+        // Export data
+        function exportData() {
+            const dataStr = JSON.stringify(papers, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `papers_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        // Import data
+        function importData() {
+            const input = document.getElementById('importFile');
+            input.click();
+        }
+
+        document.getElementById('importFile').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    
+                    if (confirm('导入将覆盖现有数据，是否继续？')) {
+                        papers = importedData;
+                        await savePapers();
+                        alert('导入成功！');
+                        renderLevel1();
+                    }
+                } catch (error) {
+                    alert('导入失败：文件格式错误');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+            
+            // Reset input
+            e.target.value = '';
+        });
+
+        // Close modal on background click
+        document.getElementById('addPaperModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
