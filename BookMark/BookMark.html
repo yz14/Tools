@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书签</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Comfortaa:wght@400;500;600;700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #64748b;
+            --border-color: #e2e8f0;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 移动端菜单按钮 */
+        .mobile-menu-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 移动端侧边栏遮罩 */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* 移动端底部操作栏 */
+        .mobile-actions {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            padding: 12px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+        }
+        .mobile-actions .btn {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mobile-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        body {
+            font-family: 'Rounded Mplus 1c', 'Quicksand', 'Comfortaa', 'Varela Round', 'Noto Sans SC', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 12px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-primary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            height: calc(100vh - 24px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            display: flex;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .category-list, .subcategory-list {
+            width: 180px;
+            background: var(--bg-secondary);
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .subcategory-list {
+            background: var(--bg-tertiary);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .category-item, .subcategory-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .category-item:hover, .subcategory-item:hover {
+            background: var(--bg-primary);
+        }
+
+        .category-item.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .subcategory-item.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .item-count {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 16px 20px;
+            overflow-y: auto;
+            background: var(--bg-primary);
+        }
+
+        .content-header {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .content-header h2 {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .content-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .bookmarks-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .bookmarks-grid {
+            padding-left: 0;
+        }
+
+        .bookmark-card {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border: 1px solid rgba(253, 203, 110, 0.3);
+            border-radius: 10px;
+            padding: 6px 8px;
+            padding-right: 26px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: visible;
+            display: inline-flex;
+            align-items: center;
+        }
+
+
+        .bookmark-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
+            z-index: 10;
+        }
+
+        .bookmark-card:nth-child(4n+1) {
+            background: linear-gradient(135deg, #fab1a0 0%, #ff7675 100%);
+            border-color: rgba(255, 118, 117, 0.3);
+        }
+
+        .bookmark-card:nth-child(4n+2) {
+            background: linear-gradient(135deg, #a8e6cf 0%, #81c784 100%);
+            border-color: rgba(129, 199, 132, 0.3);
+        }
+
+        .bookmark-card:nth-child(4n+3) {
+            background: linear-gradient(135deg, #c7ecee 0%, #95e1d3 100%);
+            border-color: rgba(149, 225, 211, 0.3);
+        }
+
+        .bookmark-card:nth-child(4n+4) {
+            background: linear-gradient(135deg, #f8b195 0%, #f67280 100%);
+            border-color: rgba(246, 114, 128, 0.3);
+        }
+
+        .bookmark-title {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+            white-space: nowrap;
+            letter-spacing: 0.3px;
+            margin-right: 5px;
+        }
+
+        .bookmark-actions {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            opacity: 0;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .bookmark-card:hover .bookmark-actions {
+            opacity: 1;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: var(--transition);
+            border-radius: 0 10px 10px 0;
+            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .btn-delete:hover {
+            background: rgba(220, 38, 38, 1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translate(-50%, -45%);
+                opacity: 0;
+            }
+            to { 
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-primary);
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            animation: slideInRight 0.3s ease;
+            z-index: 2000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        /* 响应式设计 */
+        /* 平板响应式 */
+        @media (max-width: 1024px) {
+            .category-list, .subcategory-list {
+                width: 160px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
+            
+            .bookmarks-grid {
+                gap: 6px;
+            }
+        }
+
+        /* 手机响应式 */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            
+            .container {
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .header {
+                padding: 10px 12px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1000;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+                gap: 8px;
+            }
+            
+            .header-buttons {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .main-content {
+                margin-top: 56px;
+                margin-bottom: 70px;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: -360px;
+                height: calc(100vh - 56px);
+                z-index: 999;
+                transition: left 0.3s ease;
+                background: var(--bg-primary);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .category-list, .subcategory-list {
+                width: 180px;
+            }
+            
+            .content {
+                padding: 12px;
+            }
+            
+            .content-header h2 {
+                font-size: 18px;
+            }
+            
+            .bookmarks-grid {
+                gap: 6px;
+            }
+            
+            .bookmark-card {
+                padding: 8px 10px;
+                padding-right: 30px;
+                font-size: 13px;
+                touch-action: manipulation;
+            }
+
+            .bookmark-title {
+                font-size: 12px;
+                max-width: calc(100% - 35px);
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            
+            .bookmark-card .bookmark-actions {
+                opacity: 1;
+            }
+            
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                border-radius: 0;
+                padding: 20px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                transform: none;
+                overflow-y: auto;
+            }
+            
+            .mobile-actions {
+                display: block;
+            }
+            
+            .empty-state {
+                padding: 20px;
+            }
+            
+            .empty-state-icon {
+                font-size: 48px;
+            }
+        }
+
+        /* 小屏手机 */
+        /* 小屏手机 */
+        @media (max-width: 480px) {
+            .header h1 span {
+                display: none;
+            }
+            
+            .category-list, .subcategory-list {
+                width: 150px;
+            }
+            
+            .bookmark-card {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .mobile-actions-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 4px;
+            }
+            
+            .mobile-actions .btn {
+                font-size: 11px;
+                padding: 6px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span>📚</span>
+                书签管理工具
+            </h1>
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                <span style="font-size: 20px;">☰</span>
+            </button>
+            <div class="header-buttons">
+                <button class="btn btn-primary" onclick="showAddModal()">
+                    <span>➕</span> 新增书签
+                </button>
+                <button class="btn btn-primary" onclick="exportData()">
+                    <span>💾</span> 导出数据
+                </button>
+                <input type="file" id="importFile" style="display: none;" accept=".json" onchange="importData(event)">
+                <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">
+                    <span>📂</span> 导入数据
+                </button>
+                <button class="btn btn-primary" onclick="clearCache()">
+                    <span>🔄</span> 重置数据
+                </button>
+            </div>
+        </div>
+
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="category-list" id="categoryList"></div>
+                <div class="subcategory-list" id="subcategoryList"></div>
+            </div>
+            <div class="content" id="content">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📚</div>
+                    <h3>欢迎使用书签管理工具</h3>
+                    <p>请选择左侧分类查看书签，或点击上方按钮新增书签</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增书签弹窗 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增书签</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="categoryInput">大类名称</label>
+                    <input type="text" id="categoryInput" placeholder="例如：在线课程" list="categoryDatalist">
+                    <datalist id="categoryDatalist"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="subcategoryInput">小类名称</label>
+                    <input type="text" id="subcategoryInput" placeholder="例如：机器学习" list="subcategoryDatalist">
+                    <datalist id="subcategoryDatalist"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="titleInput">链接名称</label>
+                    <input type="text" id="titleInput" placeholder="例如：MIT-2024-优化理论">
+                </div>
+                <div class="form-group">
+                    <label for="urlInput">链接地址</label>
+                    <input type="url" id="urlInput" placeholder="https://example.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                <button class="btn btn-success" onclick="addBookmark()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 移动端底部操作栏 -->
+    <div class="mobile-actions">
+        <div class="mobile-actions-grid">
+            <button class="btn btn-success" style="width: 100%;" onclick="showAddModal()">
+                <span>➕</span> 新增
+            </button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('importFile').click()">
+                <span>📂</span> 导入
+            </button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="exportData()">
+                <span>💾</span> 导出
+            </button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="clearCache()">
+                <span>🔄</span> 重置
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // 数据存储
+        let bookmarksData = {
+            categories: {}
+        };
+
+        // 当前选中的分类
+        let currentCategory = null;
+        let currentSubcategory = null;
+
+        function clearCache() {
+            if (confirm('确定要重置为默认数据吗？当前所有数据将被清除！')) {
+                localStorage.removeItem('bookmarksData');
+                localStorage.removeItem('bookmarksVersion');
+                initializeDefaultData();
+                saveData();
+                currentCategory = null;
+                currentSubcategory = null;
+                renderCategories();
+                renderSubcategories();
+                renderContent();
+                showToast('数据已重置');
+            }
+        }
+
+        // 初始化
+        function init() {
+            loadData();
+            renderCategories();
+        }
+
+        // 加载数据
+        function loadData() {
+            const saved = localStorage.getItem('bookmarksData');
+            const version = localStorage.getItem('bookmarksVersion');
+            const currentVersion = '2.0'; // 版本号，修改时更新这个值
+            
+            if (saved && version === currentVersion) {
+                bookmarksData = JSON.parse(saved);
+            } else {
+                // 初始化示例数据
+                initializeDefaultData();
+                localStorage.setItem('bookmarksVersion', currentVersion);
+                saveData();
+            }
+        }
+
+        function initializeDefaultData() {
+            bookmarksData = {
+                categories: {
+                    "在线课程": {
+                        "机器学习": [
+                            { title: "Stanford-CS231n-计算机视觉", url: "http://cs231n.stanford.edu/" }
+                        ],
+                        "深度学习": [
+                            { title: "MIT-6.S191-深度学习导论", url: "http://introtodeeplearning.com/" }
+                        ],
+                        "优化理论": [
+                            { title: "Stanford-EE364a-凸优化", url: "https://web.stanford.edu/class/ee364a/" }
+                        ],
+                        "微积分": [
+                            { title: "MIT-18.01-单变量微积分", url: "https://ocw.mit.edu/courses/18-01sc-single-variable-calculus-fall-2010/" }
+                        ],
+                        "线性代数": [
+                            { title: "MIT-18.06-线性代数", url: "https://ocw.mit.edu/courses/18-06sc-linear-algebra-fall-2011/" }
+                        ],
+                        "概率统计": [
+                            { title: "MIT-6.041-概率论导论", url: "https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/" }
+                        ],
+                        "计算机视觉": [
+                            { title: "Stanford-CS231n-CNN视觉识别", url: "http://cs231n.stanford.edu/" }
+                        ],
+                        "自然语言处理": [
+                            { title: "Stanford-CS224n-深度学习NLP", url: "http://web.stanford.edu/class/cs224n/" }
+                        ],
+                        "强化学习": [
+                            { title: "UCB-CS285-深度强化学习", url: "http://rail.eecs.berkeley.edu/deeprlcourse/" }
+                        ],
+                        "算法与数据结构": [
+                            { title: "MIT-6.006-算法导论", url: "https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/" }
+                        ],
+                        "数据库系统": [
+                            { title: "CMU-15-445-数据库系统", url: "https://15445.courses.cs.cmu.edu/" }
+                        ],
+                        "操作系统": [
+                            { title: "MIT-6.828-操作系统工程", url: "https://pdos.csail.mit.edu/6.828/" }
+                        ],
+                        "计算机网络": [
+                            { title: "Stanford-CS144-计算机网络", url: "https://cs144.github.io/" }
+                        ],
+                        "编译原理": [
+                            { title: "Stanford-CS143-编译器", url: "http://web.stanford.edu/class/cs143/" }
+                        ],
+                        "分布式系统": [
+                            { title: "MIT-6.824-分布式系统", url: "https://pdos.csail.mit.edu/6.824/" }
+                        ],
+                        "计算机图形学": [
+                            { title: "Stanford-CS248-交互式计算机图形学", url: "http://graphics.stanford.edu/courses/cs248-18-spring/" }
+                        ],
+                        "密码学": [
+                            { title: "Stanford-CS255-密码学导论", url: "https://crypto.stanford.edu/~dabo/cs255/" }
+                        ],
+                        "量子计算": [
+                            { title: "MIT-8.370x-量子计算基础", url: "https://learning.edx.org/course/course-v1:MITx+8.370.1x+1T2018" }
+                        ],
+                        "生物信息学": [
+                            { title: "Stanford-CS273a-计算生物学", url: "https://web.stanford.edu/class/cs273a/" }
+                        ],
+                        "机器人学": [
+                            { title: "MIT-6.834J-认知机器人学", url: "https://ocw.mit.edu/courses/6-834j-cognitive-robotics-spring-2016/" }
+                        ],
+                        "区块链技术": [
+                            { title: "Princeton-比特币和加密货币技术", url: "https://www.coursera.org/learn/cryptocurrency" }
+                        ],
+                        "云计算": [
+                            { title: "UIUC-云计算概念", url: "https://www.coursera.org/learn/cloud-computing" }
+                        ],
+                        "信息论": [
+                            { title: "MIT-6.441-信息论", url: "https://ocw.mit.edu/courses/6-441-information-theory-spring-2016/" }
+                        ],
+                        "计算神经科学": [
+                            { title: "Coursera-计算神经科学", url: "https://www.coursera.org/learn/computational-neuroscience" }
+                        ],
+                        "数据挖掘": [
+                            { title: "Stanford-CS246-大规模数据挖掘", url: "http://web.stanford.edu/class/cs246/" }
+                        ],
+                        "游戏开发": [
+                            { title: "MIT-CMS.611J-游戏设计", url: "https://ocw.mit.edu/courses/cms-611j-creating-video-games-fall-2013/" }
+                        ],
+                        "人工智能伦理": [
+                            { title: "MIT-24.09x-AI伦理学", url: "https://www.edx.org/course/the-ethics-of-ai" }
+                        ],
+                        "计算机安全": [
+                            { title: "Stanford-CS155-计算机和网络安全", url: "https://cs155.stanford.edu/" }
+                        ],
+                        "并行计算": [
+                            { title: "CMU-15-418-并行计算机架构", url: "http://15418.courses.cs.cmu.edu/" }
+                        ],
+                        "软件工程": [
+                            { title: "MIT-6.005-软件构造", url: "http://web.mit.edu/6.005/" }
+                        ]
+                    },
+                    "GitHub仓库": {
+                        "生成模型": [
+                            { title: "Stable-Diffusion", url: "https://github.com/CompVis/stable-diffusion" }
+                        ],
+                        "深度学习框架": [
+                            { title: "PyTorch", url: "https://github.com/pytorch/pytorch" }
+                        ]
+                    },
+                    "技术文档": {
+                        "前端框架": [
+                            { title: "React-官方文档", url: "https://react.dev/" }
+                        ]
+                    }
+                }
+            };
+        }
+
+        // 保存数据
+        function saveData() {
+            localStorage.setItem('bookmarksData', JSON.stringify(bookmarksData));
+        }
+
+        // 渲染大类列表
+        function renderCategories() {
+            const categoryList = document.getElementById('categoryList');
+            categoryList.innerHTML = '';
+            
+            for (const category in bookmarksData.categories) {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                if (category === currentCategory) {
+                    item.classList.add('active');
+                }
+                
+                const count = Object.values(bookmarksData.categories[category])
+                    .reduce((sum, bookmarks) => sum + bookmarks.length, 0);
+                
+                item.innerHTML = `
+                    <span>${category}</span>
+                    <span class="item-count">${count}</span>
+                `;
+                item.onclick = () => window.innerWidth <= 768 ? selectCategoryMobile(category) : selectCategory(category);
+                categoryList.appendChild(item);
+            }
+            
+            updateDatalist();
+        }
+
+        // 选择大类
+        function selectCategory(category) {
+            currentCategory = category;
+            currentSubcategory = null;
+            renderCategories();
+            renderSubcategories();
+            renderContent();
+        }
+
+        // 渲染小类列表
+        function renderSubcategories() {
+            const subcategoryList = document.getElementById('subcategoryList');
+            subcategoryList.innerHTML = '';
+            
+            if (!currentCategory) return;
+            
+            const subcategories = bookmarksData.categories[currentCategory];
+            for (const subcategory in subcategories) {
+                const item = document.createElement('div');
+                item.className = 'subcategory-item';
+                if (subcategory === currentSubcategory) {
+                    item.classList.add('active');
+                }
+                
+                const count = subcategories[subcategory].length;
+                item.innerHTML = `
+                    <span>${subcategory}</span>
+                    <span class="item-count">${count}</span>
+                `;
+                item.onclick = () => window.innerWidth <= 768 ? selectSubcategoryMobile(subcategory) : selectSubcategory(subcategory);
+                subcategoryList.appendChild(item);
+            }
+        }
+
+        // 选择小类
+        function selectSubcategory(subcategory) {
+            currentSubcategory = subcategory;
+            renderSubcategories();
+            renderContent();
+        }
+
+        // 渲染内容区域
+        function renderContent() {
+            const content = document.getElementById('content');
+            
+            if (!currentCategory || !currentSubcategory) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <h3>请选择分类</h3>
+                        <p>${currentCategory ? '请选择小类查看书签' : '请先选择大类'}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const bookmarks = bookmarksData.categories[currentCategory][currentSubcategory];
+            
+            if (!bookmarks || bookmarks.length === 0) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>暂无书签</h3>
+                        <p>点击上方"新增书签"按钮添加第一个书签</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            content.innerHTML = `
+                <div class="content-header">
+                    <h2>${currentCategory}/${currentSubcategory} (${bookmarks.length}) </h2>
+                </div>
+                <div class="bookmarks-grid" id="bookmarksGrid"></div>
+            `;
+            
+            const grid = document.getElementById('bookmarksGrid');
+            bookmarks.forEach((bookmark, index) => {
+                const card = document.createElement('div');
+                card.className = 'bookmark-card';
+                card.innerHTML = `
+                    <div class="bookmark-title">${bookmark.title}</div>
+                    <div class="bookmark-actions">
+                        <button class="btn-delete" onclick="deleteBookmark(${index}); event.stopPropagation();">×</button>
+                    </div>
+                `;
+                card.onclick = () => window.open(bookmark.url, '_blank');
+                grid.appendChild(card);
+            });
+        }
+
+        // 显示新增弹窗
+        function showAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+            updateDatalist();
+            // 移动端禁止页面滚动
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('addModal').style.display = 'none';
+            clearForm();
+            // 移动端恢复页面滚动
+            if (window.innerWidth <= 768) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        // 清空表单
+        function clearForm() {
+            document.getElementById('categoryInput').value = '';
+            document.getElementById('subcategoryInput').value = '';
+            document.getElementById('titleInput').value = '';
+            document.getElementById('urlInput').value = '';
+        }
+
+        // 更新数据列表
+        function updateDatalist() {
+            const categoryDatalist = document.getElementById('categoryDatalist');
+            categoryDatalist.innerHTML = '';
+            for (const category in bookmarksData.categories) {
+                const option = document.createElement('option');
+                option.value = category;
+                categoryDatalist.appendChild(option);
+            }
+            
+            const categoryInput = document.getElementById('categoryInput');
+            categoryInput.oninput = () => {
+                const subcategoryDatalist = document.getElementById('subcategoryDatalist');
+                subcategoryDatalist.innerHTML = '';
+                const category = categoryInput.value;
+                if (bookmarksData.categories[category]) {
+                    for (const subcategory in bookmarksData.categories[category]) {
+                        const option = document.createElement('option');
+                        option.value = subcategory;
+                        subcategoryDatalist.appendChild(option);
+                    }
+                }
+            };
+        }
+
+        // 添加书签
+        function addBookmark() {
+            const category = document.getElementById('categoryInput').value.trim();
+            const subcategory = document.getElementById('subcategoryInput').value.trim();
+            const title = document.getElementById('titleInput').value.trim();
+            const url = document.getElementById('urlInput').value.trim();
+            
+            if (!category || !subcategory || !title || !url) {
+                showToast('请填写所有字段', 'error');
+                return;
+            }
+            
+            // 验证URL格式
+            try {
+                new URL(url);
+            } catch (e) {
+                showToast('请输入有效的URL', 'error');
+                return;
+            }
+            
+            // 初始化分类结构
+            if (!bookmarksData.categories[category]) {
+                bookmarksData.categories[category] = {};
+            }
+            if (!bookmarksData.categories[category][subcategory]) {
+                bookmarksData.categories[category][subcategory] = [];
+            }
+            
+            // 添加书签
+            bookmarksData.categories[category][subcategory].push({ title, url });
+            
+            // 保存并更新界面
+            saveData();
+            renderCategories();
+            if (currentCategory === category) {
+                renderSubcategories();
+                if (currentSubcategory === subcategory) {
+                    renderContent();
+                }
+            }
+            
+            closeModal();
+            showToast('书签添加成功');
+        }
+
+        // 删除书签
+        function deleteBookmark(index) {
+            if (!currentCategory || !currentSubcategory) return;
+            
+            if (confirm('确定要删除这个书签吗？')) {
+                bookmarksData.categories[currentCategory][currentSubcategory].splice(index, 1);
+                
+                // 如果小类为空，删除小类
+                if (bookmarksData.categories[currentCategory][currentSubcategory].length === 0) {
+                    delete bookmarksData.categories[currentCategory][currentSubcategory];
+                    
+                    // 如果大类为空，删除大类
+                    if (Object.keys(bookmarksData.categories[currentCategory]).length === 0) {
+                        delete bookmarksData.categories[currentCategory];
+                        currentCategory = null;
+                        currentSubcategory = null;
+                    } else {
+                        currentSubcategory = null;
+                    }
+                }
+                
+                saveData();
+                renderCategories();
+                renderSubcategories();
+                renderContent();
+                showToast('书签已删除');
+            }
+        }
+
+        // 导出数据
+        function exportData() {
+            const dataStr = JSON.stringify(bookmarksData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `bookmarks_${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast('数据导出成功');
+        }
+
+        // 导入数据
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.categories) {
+                        bookmarksData = imported;
+                        saveData();
+                        currentCategory = null;
+                        currentSubcategory = null;
+                        renderCategories();
+                        renderSubcategories();
+                        renderContent();
+                        showToast('数据导入成功');
+                    } else {
+                        showToast('无效的数据格式', 'error');
+                    }
+                } catch (error) {
+                    showToast('导入失败：' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+            
+            // 清空文件输入
+            event.target.value = '';
+        }
+
+        // 显示提示
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? 'var(--danger-color)' : 'var(--success-color)';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('addModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // 关闭侧边栏
+        function closeSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // 移动端选择分类后自动关闭侧边栏
+        function selectCategoryMobile(category) {
+            selectCategory(category);
+            if (window.innerWidth <= 768) {
+                setTimeout(closeSidebar, 150);
+            }
+        }
+
+        // 移动端选择小类后自动关闭侧边栏
+        function selectSubcategoryMobile(subcategory) {
+            selectSubcategory(subcategory);
+            if (window.innerWidth <= 768) {
+                setTimeout(closeSidebar, 150);
+            }
+        }
+
+        // 初始化应用
+        init();
+    </script>
+</body>
+</html>

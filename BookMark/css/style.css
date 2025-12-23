@@ -1,0 +1,833 @@
+/**
+ * BookMark - 专业级书签管理工具
+ * 设计理念：精美、专业、实用
+ */
+
+/* ===========================================
+   1. CSS变量 - 专业配色系统
+   =========================================== */
+:root {
+    /* 品牌色 */
+    --brand-primary: #5046e5;
+    --brand-secondary: #7c3aed;
+    --brand-gradient: linear-gradient(135deg, #5046e5 0%, #7c3aed 50%, #a855f7 100%);
+    
+    /* 中性色阶 */
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-400: #94a3b8;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --slate-800: #1e293b;
+    --slate-900: #0f172a;
+    
+    /* 功能色 */
+    --green-500: #22c55e;
+    --green-600: #16a34a;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --amber-500: #f59e0b;
+    --blue-500: #3b82f6;
+    
+    /* 阴影系统 */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 12px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+    
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    
+    /* 动画 */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-fast: 150ms;
+    --duration-normal: 250ms;
+}
+
+/* ===========================================
+   2. 基础样式
+   =========================================== */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    background: var(--slate-100);
+    min-height: 100vh;
+    color: var(--slate-800);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ===========================================
+   3. 主容器
+   =========================================== */
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl);
+}
+
+/* ===========================================
+   4. 头部 - 专业风格
+   =========================================== */
+.header {
+    background: var(--brand-gradient);
+    color: white;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header h1 {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.02em;
+}
+
+.logo-icon {
+    opacity: 0.95;
+}
+
+.logo-text {
+    background: linear-gradient(to right, #fff, rgba(255,255,255,0.9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 搜索框 */
+.search-box {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+}
+
+.search-box .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--slate-400);
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    height: 42px;
+    padding: 0 16px 0 44px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 14px;
+    outline: none;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.search-box input:focus {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* 头部按钮组 */
+.header-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.btn {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all var(--duration-fast) var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.btn-success {
+    background: var(--green-500);
+    color: white;
+}
+
+.btn-success:hover {
+    background: var(--green-600);
+}
+
+.btn-secondary {
+    background: var(--slate-100);
+    color: var(--slate-700);
+    border: 1px solid var(--slate-200);
+}
+
+.btn-secondary:hover {
+    background: var(--slate-200);
+}
+
+.mobile-menu-btn {
+    display: none;
+    width: 42px;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===========================================
+   5. 主内容区布局
+   =========================================== */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ===========================================
+   6. 侧边栏 - 清晰层次
+   =========================================== */
+.sidebar {
+    display: flex;
+    flex-shrink: 0;
+    border-right: 1px solid var(--slate-200);
+    background: var(--slate-50);
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 998;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+.category-list,
+.subcategory-list {
+    width: 200px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.category-list {
+    background: white;
+    border-right: 1px solid var(--slate-100);
+}
+
+.subcategory-list {
+    background: var(--slate-50);
+}
+
+.category-item,
+.subcategory-item {
+    margin: 2px 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: all var(--duration-fast) var(--ease-out);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--slate-600);
+}
+
+.category-item:hover,
+.subcategory-item:hover {
+    background: var(--slate-100);
+    color: var(--slate-900);
+}
+
+.category-item.active {
+    background: var(--brand-primary);
+    color: white;
+    font-weight: 500;
+}
+
+.subcategory-item.active {
+    background: var(--slate-200);
+    color: var(--slate-900);
+    font-weight: 500;
+}
+
+.item-count {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: var(--slate-100);
+    color: var(--slate-500);
+}
+
+.category-item.active .item-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.subcategory-item.active .item-count {
+    background: var(--brand-primary);
+    color: white;
+}
+
+/* ===========================================
+   7. 内容区域
+   =========================================== */
+.content {
+    flex: 1;
+    padding: 24px 32px;
+    overflow-y: auto;
+    background: white;
+}
+
+.content-header {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--slate-800);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.content-header h2::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 20px;
+    background: var(--brand-gradient);
+    border-radius: 2px;
+}
+
+/* 空状态 */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.empty-state h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--slate-700);
+    margin-bottom: 8px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    color: var(--slate-500);
+}
+
+/* ===========================================
+   8. 书签卡片 - 专业设计
+   =========================================== */
+.bookmarks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+.bookmark-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: white;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    position: relative;
+}
+
+.bookmark-card:hover {
+    border-color: var(--brand-primary);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+}
+
+.bookmark-card:active {
+    transform: translateY(0);
+}
+
+/* Favicon */
+.bookmark-favicon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: var(--slate-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.bookmark-favicon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* 书签信息 */
+.bookmark-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.bookmark-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slate-800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.bookmark-domain {
+    font-size: 12px;
+    color: var(--slate-400);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bookmark-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--slate-400);
+}
+
+.bookmark-path {
+    color: var(--slate-300);
+}
+
+.bookmark-path::before {
+    content: '•';
+    margin-right: 8px;
+}
+
+/* 删除按钮 */
+.bookmark-actions {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+}
+
+.bookmark-card:hover .bookmark-actions {
+    opacity: 1;
+}
+
+.btn-delete {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    border: none;
+    background: var(--red-500);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--duration-fast);
+}
+
+.btn-delete:hover {
+    background: var(--red-600);
+    transform: scale(1.08);
+}
+
+/* ===========================================
+   9. 模态框
+   =========================================== */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    animation: fadeIn var(--duration-fast) var(--ease-out);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 440px;
+    box-shadow: var(--shadow-xl);
+    animation: slideUp var(--duration-normal) var(--ease-out);
+}
+
+.modal-header {
+    margin-bottom: 24px;
+}
+
+.modal-header h3 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--slate-800);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--slate-100);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-700);
+}
+
+.form-group input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--slate-800);
+    transition: all var(--duration-fast);
+    background: var(--slate-50);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(80, 70, 229, 0.1);
+}
+
+.form-group input::placeholder {
+    color: var(--slate-400);
+}
+
+/* ===========================================
+   10. Toast
+   =========================================== */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--slate-800);
+    color: white;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    display: none;
+    animation: slideInRight var(--duration-normal) var(--ease-out);
+    z-index: 2000;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.toast.show {
+    display: block;
+}
+
+/* ===========================================
+   11. 移动端底部栏
+   =========================================== */
+.mobile-actions {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--slate-100);
+    z-index: 999;
+}
+
+.mobile-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.mobile-actions .btn {
+    height: 44px;
+    font-size: 12px;
+    border-radius: var(--radius);
+}
+
+/* ===========================================
+   12. 动画
+   =========================================== */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, -48%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===========================================
+   13. 滚动条
+   =========================================== */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--slate-300);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--slate-400);
+}
+
+/* ===========================================
+   14. 响应式
+   =========================================== */
+@media (max-width: 1200px) {
+    .category-list,
+    .subcategory-list {
+        width: 180px;
+    }
+    
+    .bookmarks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 60px;
+        padding: 0 16px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    .header-left h1 {
+        display: none;
+    }
+
+    .search-box {
+        max-width: none;
+    }
+
+    .header-buttons {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .main-content {
+        margin-top: 60px;
+        margin-bottom: 72px;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 60px;
+        left: -400px;
+        height: calc(100vh - 60px);
+        z-index: 999;
+        transition: left var(--duration-normal) var(--ease-out);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .content {
+        padding: 20px 16px;
+    }
+
+    .bookmarks-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .bookmark-card {
+        padding: 14px;
+    }
+
+    .bookmark-actions {
+        opacity: 1;
+    }
+
+    .modal-content {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-footer {
+        margin-top: auto;
+    }
+
+    .mobile-actions {
+        display: block;
+    }
+
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 88px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-list,
+    .subcategory-list {
+        width: 150px;
+    }
+
+    .bookmark-favicon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .bookmark-favicon img {
+        width: 20px;
+        height: 20px;
+    }
+}

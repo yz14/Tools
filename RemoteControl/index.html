@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>远程控制</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #1a1a2e;
+            color: #eee;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        
+        /* 状态栏 */
+        #status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            z-index: 100;
+            font-size: 14px;
+        }
+        
+        #status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #f44;
+        }
+        
+        #status-dot.connected {
+            background: #4f4;
+        }
+        
+        #fps-info {
+            color: #888;
+        }
+        
+        /* 工具栏 */
+        #toolbar {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .tool-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        .tool-btn:active {
+            background: #555;
+        }
+        
+        .tool-btn.active {
+            background: #4a9eff;
+        }
+        
+        /* 屏幕容器 */
+        #screen-container {
+            position: fixed;
+            top: 40px;
+            left: 0;
+            right: 0;
+            bottom: 50px;
+            overflow: auto;
+            background: #000;
+        }
+        
+        #screen {
+            display: block;
+            transform-origin: 0 0;
+        }
+        
+        /* 底部控制栏 */
+        #control-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 100;
+        }
+        
+        /* 横屏优化 */
+        @media (orientation: landscape) {
+            #status-bar {
+                height: 32px;
+                font-size: 12px;
+            }
+            #screen-container {
+                top: 32px;
+                bottom: 40px;
+            }
+            #control-bar {
+                height: 40px;
+            }
+            .ctrl-btn {
+                padding: 6px 16px;
+                font-size: 12px;
+            }
+            #keyboard-area {
+                bottom: 45px;
+            }
+            #keyboard-input {
+                padding: 8px;
+                font-size: 14px;
+            }
+            #btn-send {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+        }
+        
+        /* 全屏模式 */
+        body.fullscreen #status-bar,
+        body.fullscreen #control-bar {
+            display: none;
+        }
+        body.fullscreen #screen-container {
+            top: 0;
+            bottom: 0;
+        }
+        
+        .ctrl-btn {
+            background: #333;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 60px;
+        }
+        
+        .ctrl-btn:active {
+            background: #555;
+        }
+        
+        /* 键盘输入区域 */
+        #keyboard-area {
+            position: fixed;
+            bottom: 55px;
+            left: 10px;
+            right: 10px;
+            display: none;
+            gap: 8px;
+            z-index: 100;
+        }
+        
+        #keyboard-area.show {
+            display: flex;
+        }
+        
+        #keyboard-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            background: #2a2a3e;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #fff;
+        }
+        
+        #btn-send {
+            padding: 10px 20px;
+            font-size: 14px;
+            background: #4a9eff;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        #btn-send:active {
+            background: #3080dd;
+        }
+        
+        /* 连接界面 */
+        #connect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        
+        #connect-overlay.hidden {
+            display: none;
+        }
+        
+        #connect-overlay h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        #connect-overlay p {
+            color: #888;
+            margin-bottom: 30px;
+        }
+        
+        #connect-btn {
+            background: #4a9eff;
+            border: none;
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        #connect-btn:disabled {
+            background: #555;
+        }
+        
+        /* 触摸指示器 */
+        .touch-indicator {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(74, 158, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: touch-pulse 0.3s ease-out;
+        }
+        
+        @keyframes touch-pulse {
+            from {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 1;
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 连接界面 -->
+    <div id="connect-overlay">
+        <h1>📱 远程控制</h1>
+        <p>点击连接到电脑</p>
+        <button id="connect-btn">连接</button>
+    </div>
+    
+    <!-- 状态栏 -->
+    <div id="status-bar">
+        <div id="status">
+            <div id="status-dot"></div>
+            <span id="status-text">未连接</span>
+            <span id="fps-info"></span>
+        </div>
+        <div id="toolbar">
+            <button class="tool-btn" id="btn-fit">适应</button>
+            <button class="tool-btn" id="btn-1x">1:1</button>
+            <button class="tool-btn" id="btn-keyboard">键盘</button>
+        </div>
+    </div>
+    
+    <!-- 屏幕显示区域 -->
+    <div id="screen-container">
+        <canvas id="screen"></canvas>
+    </div>
+    
+    <!-- 键盘输入 -->
+    <div id="keyboard-area">
+        <input type="text" id="keyboard-input" placeholder="输入文字...">
+        <button id="btn-send">发送</button>
+    </div>
+    
+    <!-- 底部控制栏 -->
+    <div id="control-bar">
+        <button class="ctrl-btn" id="btn-esc">ESC</button>
+        <button class="ctrl-btn" id="btn-tab">Tab</button>
+        <button class="ctrl-btn" id="btn-enter">Enter</button>
+        <button class="ctrl-btn" id="btn-back">←</button>
+    </div>
+    
+    <script>
+        // ============================================================
+        // 全局状态
+        // ============================================================
+        
+        const state = {
+            ws: null,
+            connected: false,
+            screenWidth: 0,
+            screenHeight: 0,
+            scale: 1,
+            fitMode: 'fit', // 'fit' or '1x'
+            lastFrameTime: 0,
+            frameCount: 0,
+            fps: 0,
+        };
+        
+        // DOM元素
+        const $overlay = document.getElementById('connect-overlay');
+        const $connectBtn = document.getElementById('connect-btn');
+        const $statusDot = document.getElementById('status-dot');
+        const $statusText = document.getElementById('status-text');
+        const $fpsInfo = document.getElementById('fps-info');
+        const $container = document.getElementById('screen-container');
+        const $canvas = document.getElementById('screen');
+        const $keyboardInput = document.getElementById('keyboard-input');
+        const ctx = $canvas.getContext('2d');
+        
+        // ============================================================
+        // WebSocket连接
+        // ============================================================
+        
+        function connect() {
+            const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${location.host}/ws`;
+            
+            $connectBtn.disabled = true;
+            $connectBtn.textContent = '连接中...';
+            
+            try {
+                state.ws = new WebSocket(wsUrl);
+                state.ws.binaryType = 'arraybuffer';
+                
+                state.ws.onopen = () => {
+                    console.log('WebSocket已连接');
+                };
+                
+                state.ws.onmessage = handleMessage;
+                
+                state.ws.onclose = () => {
+                    console.log('WebSocket已断开');
+                    setConnected(false);
+                };
+                
+                state.ws.onerror = (err) => {
+                    console.error('WebSocket错误:', err);
+                    setConnected(false);
+                };
+                
+            } catch (err) {
+                console.error('连接失败:', err);
+                setConnected(false);
+            }
+        }
+        
+        function setConnected(connected) {
+            state.connected = connected;
+            
+            if (connected) {
+                $overlay.classList.add('hidden');
+                $statusDot.classList.add('connected');
+                $statusText.textContent = '已连接';
+            } else {
+                $overlay.classList.remove('hidden');
+                $statusDot.classList.remove('connected');
+                $statusText.textContent = '未连接';
+                $connectBtn.disabled = false;
+                $connectBtn.textContent = '重新连接';
+            }
+        }
+        
+        // ============================================================
+        // 消息处理
+        // ============================================================
+        
+        function handleMessage(event) {
+            // 二进制数据 = 屏幕帧
+            if (event.data instanceof ArrayBuffer) {
+                const blob = new Blob([event.data], { type: 'image/jpeg' });
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0);
+                    URL.revokeObjectURL(img.src);
+                    updateFps();
+                };
+                img.src = URL.createObjectURL(blob);
+                return;
+            }
+            
+            // JSON消息
+            try {
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'info') {
+                    state.screenWidth = data.width;
+                    state.screenHeight = data.height;
+                    $canvas.width = data.width;
+                    $canvas.height = data.height;
+                    updateScale();
+                    setConnected(true);
+                }
+            } catch (err) {
+                console.error('解析消息失败:', err);
+            }
+        }
+        
+        function updateFps() {
+            state.frameCount++;
+            const now = Date.now();
+            if (now - state.lastFrameTime >= 1000) {
+                state.fps = state.frameCount;
+                state.frameCount = 0;
+                state.lastFrameTime = now;
+                $fpsInfo.textContent = `${state.fps} FPS`;
+            }
+        }
+        
+        // ============================================================
+        // 发送事件
+        // ============================================================
+        
+        function send(data) {
+            if (state.ws && state.ws.readyState === WebSocket.OPEN) {
+                state.ws.send(JSON.stringify(data));
+            }
+        }
+        
+        function sendMouseEvent(type, x, y, extra = {}) {
+            send({
+                category: 'mouse',
+                type: type,
+                x: x,
+                y: y,
+                ...extra
+            });
+        }
+        
+        function sendKeyEvent(key, extra = {}) {
+            send({
+                category: 'keyboard',
+                type: 'keydown',
+                key: key,
+                ...extra
+            });
+        }
+        
+        // ============================================================
+        // 触摸/鼠标事件处理
+        // ============================================================
+        
+        function getCanvasCoords(clientX, clientY) {
+            const rect = $canvas.getBoundingClientRect();
+            const x = (clientX - rect.left) / state.scale;
+            const y = (clientY - rect.top) / state.scale;
+            return { x, y };
+        }
+        
+        let touchState = {
+            startX: 0,
+            startY: 0,
+            startTime: 0,
+            lastTapTime: 0,
+            moved: false,
+            scrollMode: false,
+        };
+        
+        $canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const coords = getCanvasCoords(touch.clientX, touch.clientY);
+            
+            touchState.startX = coords.x;
+            touchState.startY = coords.y;
+            touchState.startTime = Date.now();
+            touchState.moved = false;
+            touchState.scrollMode = e.touches.length >= 2;
+            
+            showTouchIndicator(touch.clientX, touch.clientY);
+        }, { passive: false });
+        
+        $canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const coords = getCanvasCoords(touch.clientX, touch.clientY);
+            
+            const dx = coords.x - touchState.startX;
+            const dy = coords.y - touchState.startY;
+            
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                touchState.moved = true;
+            }
+            
+            // 双指滚动
+            if (touchState.scrollMode || e.touches.length >= 2) {
+                const scrollDelta = Math.round(dy / 10);
+                if (scrollDelta !== 0) {
+                    sendMouseEvent('scroll', coords.x, coords.y, { delta: -scrollDelta });
+                    touchState.startY = coords.y;
+                }
+                return;
+            }
+            
+            // 单指移动鼠标
+            sendMouseEvent('move', coords.x, coords.y);
+        }, { passive: false });
+        
+        $canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            
+            const duration = Date.now() - touchState.startTime;
+            const now = Date.now();
+            
+            // 检测双击
+            if (!touchState.moved && duration < 200) {
+                if (now - touchState.lastTapTime < 300) {
+                    // 双击
+                    sendMouseEvent('doubleclick', touchState.startX, touchState.startY);
+                    touchState.lastTapTime = 0;
+                } else {
+                    // 单击
+                    sendMouseEvent('click', touchState.startX, touchState.startY);
+                    touchState.lastTapTime = now;
+                }
+            }
+        }, { passive: false });
+        
+        // 长按右键
+        let longPressTimer = null;
+        
+        $canvas.addEventListener('touchstart', (e) => {
+            longPressTimer = setTimeout(() => {
+                const touch = e.touches[0];
+                const coords = getCanvasCoords(touch.clientX, touch.clientY);
+                sendMouseEvent('click', coords.x, coords.y, { button: 'right' });
+            }, 500);
+        });
+        
+        $canvas.addEventListener('touchend', () => {
+            clearTimeout(longPressTimer);
+        });
+        
+        $canvas.addEventListener('touchmove', () => {
+            clearTimeout(longPressTimer);
+        });
+        
+        // 触摸指示器
+        function showTouchIndicator(x, y) {
+            const indicator = document.createElement('div');
+            indicator.className = 'touch-indicator';
+            indicator.style.left = x + 'px';
+            indicator.style.top = y + 'px';
+            document.body.appendChild(indicator);
+            setTimeout(() => indicator.remove(), 300);
+        }
+        
+        // ============================================================
+        // 缩放控制
+        // ============================================================
+        
+        function updateScale() {
+            const containerWidth = $container.clientWidth;
+            const containerHeight = $container.clientHeight;
+            
+            if (state.fitMode === 'fit') {
+                const scaleX = containerWidth / state.screenWidth;
+                const scaleY = containerHeight / state.screenHeight;
+                state.scale = Math.min(scaleX, scaleY, 1);
+            } else {
+                state.scale = 1;
+            }
+            
+            $canvas.style.transform = `scale(${state.scale})`;
+        }
+        
+        document.getElementById('btn-fit').addEventListener('click', () => {
+            state.fitMode = 'fit';
+            updateScale();
+        });
+        
+        document.getElementById('btn-1x').addEventListener('click', () => {
+            state.fitMode = '1x';
+            updateScale();
+        });
+        
+        window.addEventListener('resize', updateScale);
+        
+        // ============================================================
+        // 键盘控制
+        // ============================================================
+        
+        const $keyboardArea = document.getElementById('keyboard-area');
+        
+        document.getElementById('btn-keyboard').addEventListener('click', () => {
+            $keyboardArea.classList.toggle('show');
+            if ($keyboardArea.classList.contains('show')) {
+                $keyboardInput.focus();
+            }
+        });
+        
+        // 发送按钮
+        document.getElementById('btn-send').addEventListener('click', () => {
+            const text = $keyboardInput.value;
+            if (text) {
+                sendText(text);
+                $keyboardInput.value = '';
+            }
+            $keyboardInput.focus();
+        });
+        
+        // 发送整段文本
+        function sendText(text) {
+            if (text) {
+                send({
+                    category: 'keyboard',
+                    type: 'text',
+                    text: text
+                });
+            }
+        }
+        
+        $keyboardInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const text = $keyboardInput.value;
+                if (text) {
+                    sendText(text);  // 发送整段文本
+                }
+                sendKeyEvent('Enter');
+                $keyboardInput.value = '';
+                e.preventDefault();
+            }
+        });
+        
+        // 双击全屏切换
+        let lastTapForFullscreen = 0;
+        document.getElementById('status-bar').addEventListener('dblclick', () => {
+            document.body.classList.toggle('fullscreen');
+        });
+        
+        // 底部控制按钮
+        document.getElementById('btn-esc').addEventListener('click', () => {
+            sendKeyEvent('Escape');
+        });
+        
+        document.getElementById('btn-tab').addEventListener('click', () => {
+            sendKeyEvent('Tab');
+        });
+        
+        document.getElementById('btn-enter').addEventListener('click', () => {
+            sendKeyEvent('Enter');
+        });
+        
+        document.getElementById('btn-back').addEventListener('click', () => {
+            sendKeyEvent('Backspace');
+        });
+        
+        // ============================================================
+        // 初始化
+        // ============================================================
+        
+        $connectBtn.addEventListener('click', connect);
+        
+        // 自动连接
+        // connect();
+    </script>
+</body>
+</html>
